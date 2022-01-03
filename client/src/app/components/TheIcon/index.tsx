@@ -12,7 +12,7 @@ interface TheIconWrapperDesignProps {
 }
 
 const sizes = {
-  small: '50px',
+  small: '40px',
   medium: '100px',
   large: '150px',
 };

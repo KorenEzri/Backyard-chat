@@ -9,14 +9,20 @@ interface Props {}
 export function TheUserControls(props: Props) {
   return (
     <TheUserControlsWrapper>
-      <TheIcon image={profileAvatar} size="small" />
-      <TheIcon image={alertIcon} size="small" />
+      <IconWrapper>
+        <TheIcon image={profileAvatar} size="small" />
+      </IconWrapper>
+      <IconWrapper>
+        <TheIcon image={alertIcon} size="small" />
+      </IconWrapper>
     </TheUserControlsWrapper>
   );
 }
 
 const TheUserControlsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 115px;
+`;
+
+const IconWrapper = styled.div`
+  margin: 5px;
 `;

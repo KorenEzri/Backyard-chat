@@ -7,29 +7,32 @@ interface Props {}
 export function SiteHeader(props: Props) {
   return (
     <HeaderWrapper>
-      <HeadderOuterFrame>
-        <HeaderLeftmostFrame>asddddd</HeaderLeftmostFrame>
-        <HeaderRightmostFrame>
-          <TheUserControls />
-        </HeaderRightmostFrame>
-      </HeadderOuterFrame>
+      <HeaderLeftmostFrame>LEFTasdadsadasdsa</HeaderLeftmostFrame>
+      <HeaderCenterFrame>asddddd</HeaderCenterFrame>
+      <HeaderRightmostFrame>
+        <TheUserControls />
+      </HeaderRightmostFrame>
     </HeaderWrapper>
   );
 }
 
-const HeaderWrapper = styled.div``;
+const HeaderWrapper = styled.div`
+  border: 2px solid blue;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+`;
 
 const HeaderRightmostFrame = styled.div`
-  justify-content: flex-end;
+border: 1px solid red;
+`;
+
+const HeaderCenterFrame = styled.div`
+border: 1px solid green;
+
 `;
 
 const HeaderLeftmostFrame = styled.div`
-  margin: auto;
-`;
+border: 5px solid yellow;
 
-const HeadderOuterFrame = styled.div`
-  border: 2px solid blue;
-  height: 60px;
-  width: 100%;
-  display: flex;
 `;
