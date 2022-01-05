@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for SiteHeader
-*
-*/
+ *
+ * Asynchronously loads the component for SiteHeader
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const SiteHeader = lazyLoad(() => import('./index'), module => module.SiteHeader);
+export const SiteHeader = lazyLoad(
+  () => import('./index'),
+  module => module.SiteHeader,
+);

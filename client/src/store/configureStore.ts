@@ -1,38 +1,24 @@
-/**
- * Create the store with dynamic reducers
- */
+//  import { anonUserReducer } from '../app/components/Chat/slices/anonUserChatSlice';
+//  import { channelReducer } from '../app/components/Chat/slices/channelSlice/index';
+import { userReducer } from '../app/redux/slices';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import {
-  configureStore,
-  getDefaultMiddleware,
-  StoreEnhancer,
-} from '@reduxjs/toolkit';
-import { createInjectorsEnhancer } from 'redux-injectors';
-import createSagaMiddleware from 'redux-saga';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
-import { createReducer } from './reducers';
+const persistConfig = {
+  key: 'root',
+  storage,
+};
 
-export function configureAppStore() {
-  const reduxSagaMonitorOptions = {};
-  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
-  const { run: runSaga } = sagaMiddleware;
+const rootReducer = combineReducers({
+  userSlice: userReducer,
+  //  anonUserChat: anonUserReducer,
+});
 
-  // Create the store with saga middleware
-  const middlewares = [sagaMiddleware];
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-  const enhancers = [
-    createInjectorsEnhancer({
-      createReducer,
-      runSaga,
-    }),
-  ] as StoreEnhancer[];
-
-  const store = configureStore({
-    reducer: createReducer(),
-    middleware: [...getDefaultMiddleware(), ...middlewares],
-    devTools: process.env.NODE_ENV !== 'production',
-    enhancers,
-  });
-
-  return store;
-}
+export const store = configureStore({
+  reducer: persistedReducer,
+});
+export const persistor = persistStore(store);

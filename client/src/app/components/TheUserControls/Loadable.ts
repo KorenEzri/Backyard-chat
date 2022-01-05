@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for TheUserControls
-*
-*/
+ *
+ * Asynchronously loads the component for TheUserControls
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const TheUserControls = lazyLoad(() => import('./index'), module => module.TheUserControls);
+export const TheUserControls = lazyLoad(
+  () => import('./index'),
+  module => module.TheUserControls,
+);

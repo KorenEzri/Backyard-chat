@@ -1,6 +1,6 @@
-import {FriendRequestsStatusEnum} from '../utils';
-import {Lang} from './lang';
-import {ValueOf} from './common';
+import { Lang } from './lang';
+import { ValueOf } from './common';
+import { FriendRequestsStatusEnum } from './friends';
 
 export type UserRole = 'admin' | 'user';
 

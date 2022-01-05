@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for ChatMessageList
-*
-*/
+ *
+ * Asynchronously loads the component for ChatMessageList
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const ChatMessageList = lazyLoad(() => import('./index'), module => module.ChatMessageList);
+export const ChatMessageList = lazyLoad(
+  () => import('./index'),
+  module => module.ChatMessageList,
+);

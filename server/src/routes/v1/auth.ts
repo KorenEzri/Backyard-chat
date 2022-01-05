@@ -1,6 +1,5 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { Request } from "express-serve-static-core";
 import {
   login,
   getToken,

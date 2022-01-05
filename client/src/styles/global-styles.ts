@@ -26,4 +26,12 @@ export const GlobalStyle = createGlobalStyle`
     font-family: inherit;
     font-size: inherit;
   }
+
+  @font-face {
+    font-family: 'backyardregular';
+    src: url('../assets/backyard/backyard-regular-webfont.woff2') format('woff2'),
+         url('../assets/backyard/backyard-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 `;

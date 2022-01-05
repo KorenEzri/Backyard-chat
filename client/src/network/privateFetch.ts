@@ -1,6 +1,6 @@
-import { apiHostWithVersion } from '../bin/index';
 import { FetchOptions, Method } from '../types';
-import { getItem } from '../utils';
+import { getItem } from './local-storage';
+import { apiHostWithVersion } from './network-consts';
 import { getAccessTokenAndRetry } from './publicFetch';
 
 export default async function securedFetch<T>(
@@ -8,7 +8,7 @@ export default async function securedFetch<T>(
   method: Method = 'GET',
   body?: Record<string, any>,
 ): Promise<T> {
-  const accessToken = await getItem('accessToken');
+  const accessToken = getItem('accessToken');
 
   if (!accessToken) {
     throw new Error('No Session Active');

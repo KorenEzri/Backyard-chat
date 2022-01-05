@@ -1,10 +1,14 @@
 import { getAccessToken } from './auth';
 import * as SocketIOClient from 'socket.io-client';
 import { ISocketController } from '../types';
+import { autoBind } from 'autoBind';
+import { apiHost } from './network-consts';
+import { getItem } from './local-storage';
 
 class SocketController implements ISocketController {
   isReady = false;
   socket = {} as SocketIOClient.Socket;
+
   constructor() {
     autoBind(this);
   }
@@ -36,13 +40,16 @@ class SocketController implements ISocketController {
   }
 
   async connect(token?: string) {
+    const accessToken = getItem('accessToken');
+
     this.socket = SocketIOClient.io(apiHost, {
       auth: {
-        token: token ? token : await getItem('accessToken'),
+        token: token ? token : accessToken,
         // firebaseToken:
         //   Platform.OS === 'android' ? await PushManager.getPushToken() : null,
       },
     });
+
     this.isReady = true;
     this.initListeners();
   }
@@ -69,4 +76,5 @@ class SocketController implements ISocketController {
     }
   }
 }
+
 export const socketController = new SocketController();

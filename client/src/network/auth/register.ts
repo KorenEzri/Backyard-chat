@@ -1,4 +1,5 @@
 import { logger } from 'logger';
+import { setItem } from 'network/local-storage';
 import { publicFetch } from 'network/publicFetch';
 import { IUser, UserAndTokens } from 'types';
 import { BASE } from './auth-consts';
@@ -10,9 +11,9 @@ export const register = async (
     const { user, accessToken, refreshToken } =
       await publicFetch<UserAndTokens>(`${BASE}/register`, 'POST', payload);
 
-    await setItem('accessToken', accessToken);
-    await setItem('refreshToken', refreshToken);
-    await setItem('currUser', user);
+    setItem('accessToken', accessToken);
+    setItem('refreshToken', refreshToken);
+    setItem('currUser', user);
 
     return user;
   } catch (e) {

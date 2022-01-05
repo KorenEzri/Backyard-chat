@@ -1,9 +1,10 @@
 import { BASE } from './auth/auth-consts';
+import { getItem } from './local-storage';
 import { publicFetch } from './publicFetch';
 
 export const logErrorToService = async (error: Error, info: string) => {
   try {
-    const prevUserString = await getItem('currUser');
+    const prevUserString = getItem('currUser');
 
     let prevUser;
 

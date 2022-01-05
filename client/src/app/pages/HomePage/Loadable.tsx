@@ -2,7 +2,7 @@
  * Asynchronously loads the component for HomePage
  */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
 export const HomePage = lazyLoad(
   () => import('./index'),

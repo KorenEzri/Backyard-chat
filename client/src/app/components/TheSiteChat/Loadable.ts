@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for TheSiteChat
-*
-*/
+ *
+ * Asynchronously loads the component for TheSiteChat
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const TheSiteChat = lazyLoad(() => import('./index'), module => module.TheSiteChat);
+export const TheSiteChat = lazyLoad(
+  () => import('./index'),
+  module => module.TheSiteChat,
+);

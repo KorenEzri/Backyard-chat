@@ -1,7 +1,7 @@
-import { apiHostWithVersion } from '../bin/index';
 import { getAccessToken } from './auth';
 import securedFetch from './privateFetch';
 import { FetchOptions, Maybe, Method } from '../types';
+import { apiHostWithVersion } from './network-consts';
 
 export async function publicFetch<T>(
   path: string,

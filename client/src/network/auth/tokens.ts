@@ -1,10 +1,15 @@
+import { getItem, setItem } from 'network/local-storage';
 import { publicFetch } from 'network/publicFetch';
 import { Tokens } from 'types';
 import { BASE } from './auth-consts';
 
 export const getRefreshOrThrow = async () => {
-  const refreshToken = await getItem('refreshToken');
-  if (!refreshToken) throw new Error('no refresh token found');
+  const refreshToken = getItem('refreshToken');
+
+  if (!refreshToken) {
+    throw new Error('no refresh token found');
+  }
+
   return refreshToken;
 };
 

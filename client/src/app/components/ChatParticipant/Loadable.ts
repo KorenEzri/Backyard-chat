@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for ChatParticipant
-*
-*/
+ *
+ * Asynchronously loads the component for ChatParticipant
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const ChatParticipant = lazyLoad(() => import('./index'), module => module.ChatParticipant);
+export const ChatParticipant = lazyLoad(
+  () => import('./index'),
+  module => module.ChatParticipant,
+);

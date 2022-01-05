@@ -1,4 +1,5 @@
 import { logger } from 'logger';
+import { setItem } from 'network/local-storage';
 import securedFetch from 'network/privateFetch';
 import { publicFetch } from 'network/publicFetch';
 import { PassAndEmail, IUser, UserAndTokens, ISuccess } from 'types';
@@ -12,9 +13,9 @@ export const loginByPass = async (
     const { user, accessToken, refreshToken } =
       await publicFetch<UserAndTokens>(`${BASE}/login`, 'POST', payload);
 
-    await setItem('accessToken', accessToken);
-    await setItem('refreshToken', refreshToken);
-    await setItem('currUser', user);
+    setItem('accessToken', accessToken);
+    setItem('refreshToken', refreshToken);
+    setItem('currUser', user);
 
     return user;
   } catch (e) {
@@ -31,8 +32,8 @@ export const loginWithToken = async (): Promise<IUser | null> => {
       Pick<UserAndTokens, 'user' | 'accessToken'>
     >(`${BASE}/login-with-token`, 'POST', { refreshToken });
 
-    await setItem('accessToken', accessToken);
-    await setItem('currUser', user);
+    setItem('accessToken', accessToken);
+    setItem('currUser', user);
 
     return user;
   } catch ({ message }) {

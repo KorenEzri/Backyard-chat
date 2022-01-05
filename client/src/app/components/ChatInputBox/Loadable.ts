@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for ChatInputBox
-*
-*/
+ *
+ * Asynchronously loads the component for ChatInputBox
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const ChatInputBox = lazyLoad(() => import('./index'), module => module.ChatInputBox);
+export const ChatInputBox = lazyLoad(
+  () => import('./index'),
+  module => module.ChatInputBox,
+);

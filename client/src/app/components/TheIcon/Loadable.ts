@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for TheIcon
-*
-*/
+ *
+ * Asynchronously loads the component for TheIcon
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const TheIcon = lazyLoad(() => import('./index'), module => module.TheIcon);
+export const TheIcon = lazyLoad(
+  () => import('./index'),
+  module => module.TheIcon,
+);

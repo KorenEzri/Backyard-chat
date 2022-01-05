@@ -2,7 +2,7 @@
  * Asynchronously loads the component for NotFoundPage
  */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
 export const NotFoundPage = lazyLoad(
   () => import('./index'),

@@ -1,9 +1,12 @@
 /**
-*
-* Asynchronously loads the component for BaseButton
-*
-*/
+ *
+ * Asynchronously loads the component for BaseButton
+ *
+ */
 
-import { lazyLoad } from 'utils/loadable';
+import { lazyLoad } from 'boilerplate-utils/loadable';
 
-export const BaseButton = lazyLoad(() => import('./index'), module => module.BaseButton);
+export const BaseButton = lazyLoad(
+  () => import('./index'),
+  module => module.BaseButton,
+);
