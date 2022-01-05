@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { useHistory } from 'react-router-dom';
-import { BaseTitle } from 'app/components/BaseTitle/Loadable';
-import { BaseForm } from 'app/components/BaseForm/Loadable';
 import { BaseButton } from 'app/components/BaseButton/Loadable';
+import { BaseForm } from 'app/components/BaseForm/Loadable';
+import { BaseTitle } from 'app/components/BaseTitle/Loadable';
 import { formInputs } from 'app/components/BaseForm/form-inputs';
 
-export function Login() {
+export function Register() {
   const history = useHistory();
   const [form, setForm] = React.useState({
     username: '',
@@ -14,7 +14,7 @@ export function Login() {
   });
 
   const onSubmit = {
-    text: 'Login',
+    text: 'Register',
     onClick: () => {
       console.log(form);
     },
@@ -26,11 +26,11 @@ export function Login() {
         <BaseTitle title="Login" baseSettings={{ center: true }} />
       </BackyardLoginTitle>
       <LoginFormWrapper>
-        <BaseForm inputs={formInputs.login(form, setForm)} submit={onSubmit} />
+        <BaseForm inputs={formInputs.register(form, setForm)} submit={onSubmit} />
       </LoginFormWrapper>
       <LoginPageResgisterBtn>
         <BaseButton
-          text={'Register'}
+          text={'Login'}
           onClick={() => history.push('/register')}
         />
       </LoginPageResgisterBtn>
