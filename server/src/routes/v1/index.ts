@@ -1,11 +1,9 @@
-// import { Router } from "express";
-// import { checkToken } from "../../middlewares";
-// // import authRouter from "./auth";
-// import chatRouter from "./chat";
-// const router = Router();
+import { Router } from "express";
+import { checkToken } from "../../middlewares";
+import authRouter from "./auth";
+const router = Router();
 
-// router.use("/chat", chatRouter);
-// // router.use("/auth", authRouter);
-// router.use(checkToken);
+router.use("/auth", authRouter);
+router.use(checkToken);
 
-// export default router;
+export default router;

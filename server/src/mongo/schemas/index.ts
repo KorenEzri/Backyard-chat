@@ -1,3 +1,3 @@
 export * from "./error";
-export * from "./refreshToken";
+export * from "./refresh-token";
 export * from "./user";

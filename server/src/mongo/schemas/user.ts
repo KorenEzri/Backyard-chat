@@ -1,5 +1,6 @@
 // import { IUserDoc } from "../../types";
 import mongoose, { Schema } from "mongoose";
+import { IUserDoc } from "../../types";
 
 const userDbSchema: Schema = new mongoose.Schema(
   {
@@ -48,6 +49,6 @@ userDbSchema.set("toJSON", {
   },
 });
 
-// const User = mongoose.model<IUserDoc>("User", userDbSchema);
+const User = mongoose.model<IUserDoc>("User", userDbSchema);
 
-// export default User;
+export default User;
