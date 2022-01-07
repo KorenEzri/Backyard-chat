@@ -19,8 +19,7 @@ export interface IUser {
   avatar: string;
   socketId: string;
   email: string;
-  language: Lang;
-  userName: string;
+  username: string;
   firebaseToken?: string;
   role: UserRole;
   blocked: IUser[] | string[];

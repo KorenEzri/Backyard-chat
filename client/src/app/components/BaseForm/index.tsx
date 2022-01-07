@@ -1,16 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
+import { BaseReactError, FormProps } from 'types';
 import { BaseBtnProps } from '../BaseButton';
 import { BaseButton } from '../BaseButton/Loadable';
 import { BaseFormErrorMessage } from '../BaseFormErrorMessage/Loadable';
-
-interface FormProps {
-  title: string;
-  attributes: Partial<HTMLInputElement>;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  required?: boolean;
-  validation?: Function;
-}
 
 interface Props {
   inputs: FormProps[];
@@ -19,68 +12,75 @@ interface Props {
 
 export function BaseForm(props: Props) {
   const { inputs, submit } = props;
-  const [errors, setErrors] = React.useState<string[]>([]);
+  const [error, setError] = React.useState<BaseReactError>();
 
-  const validateForm = (args) => {
-    const validationErrs = inputs.map((input) => {
-      const { validation, attributes } = input;
-      
-      if (validation) {
-       return validation(attributes.value)
-      }
-    })
+  const validateForm = async (args: React.SyntheticEvent<HTMLButtonElement, Event>) => {
+    const validationErrs = await Promise.all(
+      inputs.map(async input => {
+        const { validation, attributes } = input;
 
-    if (validationErrs.some((err) => err !== null)) {
-      setErrors(
-        Array.from(
-          new Set([...errors, ...validationErrs]),
-        ),
-      );
+        if (validation) {
+          return validation(attributes.value);
+        }
+      }),
+    );
+
+    if (validationErrs.some(err => err !== null && err?.isError === true)) {
+      setError(validationErrs.filter(err => err?.isError === true)[0]);
+
       return false;
     } else {
-      submit.onClick(args)
+     await submit.onClick(args);
     }
-  }
+  };
 
   return (
     <BaseFormWrapper>
-      {errors.length > 0 &&
-        errors.map(error => {
-          return error ? <BaseFormErrorMessage allErrors={errors} error={error} setErrors={setErrors} /> : null;
-        })}
-
-      {inputs.map(({ title, attributes, onChange, required, validation }) => {
-        return (
-          <>
-            <BaseFormLabel>
-              {title}
-              {required && <RequiredMark>*</RequiredMark>}
-            </BaseFormLabel>
-            <BaseFormInput>
-              <input
-                type={attributes?.type || 'text'}
-                value={attributes.value}
-                onChange={onChange}
-                required={required}
-                onBlur={
-                  validation
-                    ? () => {
-                        setErrors(
-                          Array.from(
-                            new Set([...errors, validation(attributes.value)]),
-                          ),
-                        );
-                      }
-                    : () => {}
-                }
-              />
-            </BaseFormInput>
-          </>
-        );
-      })}
+      <BaseFormErrorMessage error={error} setError={setError} />
+      {inputs.map(
+        ({ title, attributes, onChange, required, validation, options }) => {
+          return (
+            <>
+              <BaseFormLabel>
+                {title}
+                {required && <RequiredMark>*</RequiredMark>}
+              </BaseFormLabel>
+              {attributes?.type === 'select' && options ? (
+                <BaseFormInput>
+                  <select name={title.toLowerCase()}>
+                    {options.map(option => {
+                      return (
+                        <option value={option.toLowerCase()}>{option}</option>
+                      );
+                    })}
+                  </select>
+                </BaseFormInput>
+              ) : (
+                <BaseFormInput>
+                  <input
+                    type={attributes?.type || 'text'}
+                    value={attributes.value}
+                    onChange={onChange}
+                    required={required}
+                    onBlur={
+                      validation
+                        ? async () => {
+                            setError(await validation(attributes.value));
+                          }
+                        : () => {}
+                    }
+                  />
+                </BaseFormInput>
+              )}
+            </>
+          );
+        },
+      )}
       <BaseButton
         text={submit.text}
-        onClick={validateForm}
+        onClick={async args => {
+          await validateForm(args);
+        }}
         shade={submit.shade}
       />
     </BaseFormWrapper>
@@ -94,7 +94,8 @@ const BaseFormWrapper = styled.div`
 `;
 
 const BaseFormInput = styled.div`
-  input {
+  input,
+  select {
     margin: 6px;
     padding: 12px;
     font-size: 14px;

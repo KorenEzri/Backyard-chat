@@ -7,7 +7,7 @@ import {
   loginWithToken,
   logErrorToService,
   editUser,
-  checkIfUserNameIsValid,
+  checkIfUsernameIsValid,
 } from "../../controllers";
 import { withTryCatch } from "../../controllers/with-try-catch";
 import { checkToken } from "../../middlewares";
@@ -46,8 +46,8 @@ authRouter.put("/edit", checkToken, (req: ChatRequest, res: ChatResponse) =>
   withTryCatch(req, res, editUser)
 );
 
-authRouter.post("/check-username", checkToken, (req, res) =>
-  withTryCatch(req, res, checkIfUserNameIsValid)
+authRouter.post("/check-username", (req, res) =>
+  withTryCatch(req, res, checkIfUsernameIsValid)
 );
 
 export default authRouter;

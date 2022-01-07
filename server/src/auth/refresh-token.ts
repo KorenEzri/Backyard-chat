@@ -9,7 +9,7 @@ require("dotenv").config();
 
 export const generateRefreshToken = async (
   id: string,
-  userName: string,
+  username: string,
   role: string
 ): Promise<string | void> => {
   try {
@@ -24,7 +24,7 @@ export const generateRefreshToken = async (
     const token = jwt.sign(
       {
         userId: id,
-        userName,
+        username,
         role,
       },
       process.env.REFRESH_TOKEN_SECRET as Secret,
@@ -55,7 +55,7 @@ export const verifyRefreshToken = (token: string): Falsy<EncodeResult> => {
     );
 
     return data;
-  } catch {
+  } catch (err) {
     return false;
   }
 };

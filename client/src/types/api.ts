@@ -30,9 +30,9 @@ export interface IAdded {
   added: boolean;
 }
 
-export interface PassAndEmail {
+export interface PassAndUsername {
   password: string;
-  email: string;
+  username: string;
 }
 
 export interface Tokens {

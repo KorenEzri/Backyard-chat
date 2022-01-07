@@ -16,9 +16,9 @@ export const getToken = async (req: ChatRequest, res: ChatResponse) => {
     return createError("token invalid", 400);
   }
 
-  const { userId, userName, role } = data;
+  const { userId, username, role } = data;
 
-  const accessToken = generateAccessToken(userId, userName, role);
+  const accessToken = generateAccessToken(userId, username, role);
 
   res.json({ accessToken });
 };

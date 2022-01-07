@@ -1,13 +1,13 @@
 import { logger } from 'logger';
-import { setItem } from 'network/local-storage';
+import { multiRemove, setItem } from 'network/local-storage';
 import securedFetch from 'network/privateFetch';
 import { publicFetch } from 'network/publicFetch';
-import { PassAndEmail, IUser, UserAndTokens, ISuccess } from 'types';
+import { PassAndUsername, IUser, UserAndTokens, ISuccess } from 'types';
 import { getRefreshOrThrow } from './';
 import { BASE } from './auth-consts';
 
 export const loginByPass = async (
-  payload: PassAndEmail,
+  payload: PassAndUsername,
 ): Promise<IUser | null> => {
   try {
     const { user, accessToken, refreshToken } =
@@ -26,7 +26,7 @@ export const loginByPass = async (
 
 export const loginWithToken = async (): Promise<IUser | null> => {
   try {
-    const refreshToken = await getRefreshOrThrow();
+    const refreshToken = getRefreshOrThrow();
 
     const { accessToken, user } = await publicFetch<
       Pick<UserAndTokens, 'user' | 'accessToken'>
@@ -37,7 +37,7 @@ export const loginWithToken = async (): Promise<IUser | null> => {
 
     return user;
   } catch ({ message }) {
-    // logger.error(message); //TODO uncomment
+    logger.error(message);
     return null;
   }
 };
@@ -47,11 +47,7 @@ export const logout = async (): Promise<boolean> => {
     const { success } = await securedFetch<ISuccess>(`${BASE}/logout`, 'POST');
 
     if (success) {
-      // await AsyncStorage.multiRemove([
-      //   'accessToken',
-      //   'currProfile',
-      //   'refreshToken',
-      // ]);
+      multiRemove(['accessToken', 'currProfile', 'refreshToken']);
     }
 
     return success;
@@ -61,12 +57,12 @@ export const logout = async (): Promise<boolean> => {
   }
 };
 
-export const checkUserName = async (userName: string): Promise<boolean> => {
+export const checkUserName = async (username: string): Promise<boolean> => {
   try {
     const { ok } = await securedFetch<Record<'ok', boolean>>(
       `${BASE}/check-username`,
       'POST',
-      { userName },
+      { username },
     );
     return ok;
   } catch ({ message }) {

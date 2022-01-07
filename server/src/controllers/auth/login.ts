@@ -10,13 +10,13 @@ import User from "../../mongo/schemas/user";
 import { ChatRequest, ChatResponse } from "../../types";
 
 export const login = async (req: ChatRequest, res: ChatResponse) => {
-  const { password, email } = req.body;
+  const { password, username } = req.body;
 
-  if (!password || !email) {
+  if (!password || !username) {
     createError("content missing", 400);
   }
 
-  const user = await User.findOne({ email }).populate({
+  const user = await User.findOne({ username }).populate({
     path: "friends",
     select: friendsFields,
   });
@@ -33,14 +33,13 @@ export const login = async (req: ChatRequest, res: ChatResponse) => {
 
   delete user?.password;
 
-  const accessToken = generateAccessToken(user._id, user.userName, user.role);
+  const accessToken = generateAccessToken(user._id, user.username, user.role);
 
   const refreshToken = await generateRefreshToken(
     user._id,
-    user.userName,
+    username,
     user.role
   );
-
   res.json({ accessToken, refreshToken, user });
 };
 
@@ -76,7 +75,7 @@ export const loginWithToken = async (req: ChatRequest, res: ChatResponse) => {
 
   delete user.password;
 
-  const accessToken = generateAccessToken(userId, user.userName, user.role);
+  const accessToken = generateAccessToken(userId, user.username, user.role);
 
   res.json({ user, accessToken });
 };

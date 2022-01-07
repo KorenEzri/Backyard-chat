@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 export interface EncodeResult {
   userId: string;
-  userName: string;
+  username: string;
   role: UserRole;
 }
 

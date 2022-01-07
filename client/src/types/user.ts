@@ -1,4 +1,3 @@
-import { Lang } from './lang';
 import { ValueOf } from './common';
 import { FriendRequestsStatusEnum } from './friends';
 
@@ -15,9 +14,7 @@ export interface IUser {
   avatar: string;
   socketId: string;
   email: string;
-  language: Lang;
-  userName: string;
-  firebaseToken?: string;
+  username: string;
   role: UserRole;
   blocked: IUser[] | string[];
   friends: IFriend[];
@@ -38,7 +35,6 @@ export type IFriend = Omit<
   | 'email'
   | 'isVerified'
   | 'role'
-  | 'language'
   | 'updatedAt'
   | 'friendRequests'
 >;

@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { BaseTitle } from 'app/components/BaseTitle/Loadable';
 import { BaseForm } from 'app/components/BaseForm/Loadable';
 import { BaseButton } from 'app/components/BaseButton/Loadable';
-import { formInputs } from 'app/components/BaseForm/form-inputs';
+import { formInputs } from 'app/forms';
+import { loginByPass } from 'network';
 
 export function Login() {
   const history = useHistory();
@@ -15,8 +16,8 @@ export function Login() {
 
   const onSubmit = {
     text: 'Login',
-    onClick: () => {
-      console.log(form);
+    onClick: async () => {
+      await loginByPass(form)
     },
   };
 

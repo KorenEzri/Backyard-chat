@@ -1,11 +1,14 @@
+import { logger } from 'logger';
 import { loginWithToken } from 'network/auth/login';
-import { take, call, put, select, takeLatest } from 'redux-saga/effects';
-import { userActions as actions } from '.';
+import { call, put } from 'redux-saga/effects';
+import { userActions } from '.';
 
-function* sagaLoginWithToken() {
-  loginWithToken();
-}
+export function* sagaLoginWithToken() {
+  try {
+    const res = yield call(loginWithToken);
 
-export function* userSaga() {
-  yield takeLatest(actions.loginWithTokenAction.type, sagaLoginWithToken);
+    yield put(userActions.loginSuccess(res));
+  } catch ({ message }) {
+    logger.error(message);
+  }
 }

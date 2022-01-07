@@ -1,26 +1,26 @@
 import * as React from 'react';
 import { Loading } from 'app/pages/Loading/Loadable';
-import { useDispatch, useSelector } from 'react-redux';
 import PrivateRoutes from './PrivateRoutes';
 import PublicRoutes from './PublicRoutes';
-import { selectUser, useUserSlice } from 'app/redux/slices';
+import { loginWithToken } from 'network';
 
 export default function RoutesContainer() {
-  const dispatch = useDispatch();
-
-  const { loadingAuth, isSignedIn } = useSelector(selectUser);
-
-  const {
-    actions: { loginWithTokenAction },
-  } = useUserSlice();
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const [loadingAuth, setLoadingAuth] = React.useState(true);
 
   React.useEffect(() => {
-    dispatch(loginWithTokenAction());
-  }, [dispatch]);
+    (async () => {
+      const res = await loginWithToken();
+      if (res !== null) {
+        setIsSignedIn(true);
+      }
+      setLoadingAuth(false)
+    })();
+  }, []);
 
-//   if (loadingAuth && !isSignedIn) {
-//     return <Loading />;
-//   }
+  if (loadingAuth && !isSignedIn) {
+    return <Loading />;
+  }
 
   return <div>{isSignedIn ? <PrivateRoutes /> : <PublicRoutes />}</div>;
 }

@@ -3,7 +3,7 @@ import { publicFetch } from 'network/publicFetch';
 import { Tokens } from 'types';
 import { BASE } from './auth-consts';
 
-export const getRefreshOrThrow = async () => {
+export const getRefreshOrThrow = () => {
   const refreshToken = getItem('refreshToken');
 
   if (!refreshToken) {
@@ -15,7 +15,7 @@ export const getRefreshOrThrow = async () => {
 
 export const getAccessToken = async () => {
   try {
-    const refreshToken = await getRefreshOrThrow();
+    const refreshToken = getRefreshOrThrow();
 
     const { accessToken } = await publicFetch<Pick<Tokens, 'accessToken'>>(
       `${BASE}/get-token`,
@@ -25,7 +25,7 @@ export const getAccessToken = async () => {
       },
     );
 
-    await setItem('accessToken', accessToken);
+    setItem('accessToken', accessToken);
 
     return accessToken;
   } catch {}

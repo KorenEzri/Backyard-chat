@@ -4,26 +4,31 @@ import { useHistory } from 'react-router-dom';
 import { BaseButton } from 'app/components/BaseButton/Loadable';
 import { BaseForm } from 'app/components/BaseForm/Loadable';
 import { BaseTitle } from 'app/components/BaseTitle/Loadable';
-import { formInputs } from 'app/components/BaseForm/form-inputs';
+import { formInputs } from 'app/forms';
+import { register } from 'network';
 
 export function Register() {
   const history = useHistory();
   const [form, setForm] = React.useState({
+    firstName: '',
+    lastName: '',
     username: '',
     password: '',
+    email: '',
+    avatar: '',
   });
 
   const onSubmit = {
     text: 'Register',
-    onClick: () => {
-      console.log(form);
+    onClick: async () => {
+      await register(form)
     },
   };
 
   return (
     <LoginPageWrapper>
       <BackyardLoginTitle>
-        <BaseTitle title="Login" baseSettings={{ center: true }} />
+        <BaseTitle title="Register" baseSettings={{ center: true }} />
       </BackyardLoginTitle>
       <LoginFormWrapper>
         <BaseForm inputs={formInputs.register(form, setForm)} submit={onSubmit} />
@@ -31,14 +36,16 @@ export function Register() {
       <LoginPageResgisterBtn>
         <BaseButton
           text={'Login'}
-          onClick={() => history.push('/register')}
+          onClick={() => history.push('/')}
         />
       </LoginPageResgisterBtn>
     </LoginPageWrapper>
   );
 }
 
-const LoginPageWrapper = styled.div``;
+const LoginPageWrapper = styled.div`
+overflow-y: hidden;
+`;
 const BackyardLoginTitle = styled.div`
   * {
     font-family: 'backyardregular' !important;

@@ -6,7 +6,6 @@ import Logger from "../../logger/logger";
 import User from "../../mongo/schemas/user";
 import { ChatRequest, ChatResponse, IUser } from "../../types";
 import { userValidationSchema } from "../../validations";
-import { generateUserName } from "./generate-user-name";
 
 export const register = async (req: ChatRequest, res: ChatResponse) => {
   const {
@@ -15,16 +14,16 @@ export const register = async (req: ChatRequest, res: ChatResponse) => {
     avatar = null,
     email,
     password,
-    language,
+    username,
   } = req.body;
 
   const payload: Partial<IUser> = {
     firstName,
     lastName,
+    username,
     avatar,
     email,
     password,
-    language,
   };
 
   if (!avatar) {
@@ -34,16 +33,16 @@ export const register = async (req: ChatRequest, res: ChatResponse) => {
   try {
     await userValidationSchema.validateAsync(payload);
 
-    const isUserExists = await User.findOne({ email, isVerified: true });
+    const doesUserExist = await User.findOne({ email, isVerified: true });
 
-    if (isUserExists) {
+    if (doesUserExist) {
       createError("error occurred", 400);
     }
 
     const passwordHash = bcrypt.hashSync(payload.password!, 8);
 
     payload.password = passwordHash;
-    payload.userName = await generateUserName({ firstName, lastName });
+    payload.username = username;
 
     const newUser = new User(payload);
 
@@ -51,13 +50,13 @@ export const register = async (req: ChatRequest, res: ChatResponse) => {
 
     const accessToken = generateAccessToken(
       user._id,
-      newUser.userName,
+      newUser.username,
       newUser.role
     );
 
     const refreshToken = await generateRefreshToken(
       user._id,
-      newUser.userName,
+      newUser.username,
       newUser.role
     );
 
@@ -71,19 +70,19 @@ export const register = async (req: ChatRequest, res: ChatResponse) => {
   }
 };
 
-export const checkIfUserNameIsValid = async (
+export const checkIfUsernameIsValid = async (
   req: ChatRequest,
   res: ChatResponse
 ) => {
-  const { userName } = req.body;
+  const { username } = req.body;
 
-  if (userName?.length < 6) {
+  if (username?.length < 6) {
     return res.json({ ok: false });
   }
 
-  const isUserExists = await User.findOne({ userName });
+  const doesUserExist = await User.findOne({ username });
 
-  if (isUserExists) {
+  if (doesUserExist) {
     return res.json({ ok: false });
   }
 

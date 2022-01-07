@@ -7,17 +7,15 @@ export const editUser = async (req: ChatRequest, res: ChatResponse) => {
   const {
     firstName = null,
     lastName = null,
-    language = null,
     avatar = null,
-    userName = null,
+    username = null,
   } = req.body;
 
   const payload: Partial<IUser> = {
     firstName,
     lastName,
-    language,
     avatar,
-    userName,
+    username,
   };
 
   Object.keys(payload).forEach((key) => {

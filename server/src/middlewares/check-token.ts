@@ -28,7 +28,7 @@ export const checkToken = (
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as Secret)
     );
     req.userId = data.userId;
-    req.userName = data.userName;
+    req.username = data.username;
     req.role = data.role;
 
     return next();

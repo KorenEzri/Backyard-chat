@@ -5,13 +5,13 @@ require("dotenv").config();
 
 export const generateAccessToken = (
   id: string,
-  userName: string,
+  username: string,
   role: string
 ) =>
   jwt.sign(
     {
       userId: id,
-      userName,
+      username,
       role,
     },
     process.env.ACCESS_TOKEN_SECRET as Secret,
