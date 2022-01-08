@@ -1,20 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { BaseReactError, FormProps } from 'types';
+import { IFormStyle } from 'types/form-style';
 import { BaseBtnProps } from '../BaseButton';
 import { BaseButton } from '../BaseButton/Loadable';
 import { BaseFormErrorMessage } from '../BaseFormErrorMessage/Loadable';
 
+
+
 interface Props {
   inputs: FormProps[];
   submit: BaseBtnProps;
+  formStyle?: IFormStyle;
 }
 
 export function BaseForm(props: Props) {
-  const { inputs, submit } = props;
+  const { inputs, submit, formStyle } = props;
   const [error, setError] = React.useState<BaseReactError>();
 
-  const validateForm = async (args: React.SyntheticEvent<HTMLButtonElement, Event>) => {
+  const validateForm = async (
+    args: React.SyntheticEvent<HTMLButtonElement, Event>,
+  ) => {
     const validationErrs = await Promise.all(
       inputs.map(async input => {
         const { validation, attributes } = input;
@@ -30,23 +36,25 @@ export function BaseForm(props: Props) {
 
       return false;
     } else {
-     await submit.onClick(args);
+      await submit.onClick(args);
     }
   };
 
   return (
-    <BaseFormWrapper>
+    <BaseFormWrapper wrapperStyle={formStyle?.wrapperStyle}>
       <BaseFormErrorMessage error={error} setError={setError} />
       {inputs.map(
         ({ title, attributes, onChange, required, validation, options }) => {
           return (
             <>
-              <BaseFormLabel>
-                {title}
-                {required && <RequiredMark>*</RequiredMark>}
-              </BaseFormLabel>
+              {title.length ? (
+                <BaseFormLabel>
+                  {title}
+                  {required && <RequiredMark>*</RequiredMark>}
+                </BaseFormLabel>
+              ) : null}
               {attributes?.type === 'select' && options ? (
-                <BaseFormInput>
+                <BaseFormInput selectStyle={formStyle?.selectStyle}>
                   <select name={title.toLowerCase()}>
                     {options.map(option => {
                       return (
@@ -56,7 +64,7 @@ export function BaseForm(props: Props) {
                   </select>
                 </BaseFormInput>
               ) : (
-                <BaseFormInput>
+                <BaseFormInput inputStyle={formStyle?.inputStyle}>
                   <input
                     type={attributes?.type || 'text'}
                     value={attributes.value}
@@ -82,18 +90,20 @@ export function BaseForm(props: Props) {
           await validateForm(args);
         }}
         shade={submit.shade}
+        btnStyle={submit.btnStyle || formStyle?.btnStyle}
       />
     </BaseFormWrapper>
   );
 }
 
-const BaseFormWrapper = styled.div`
+const BaseFormWrapper = styled.div<IFormStyle>`
   display: flex;
   flex-direction: column;
   text-align: center;
+  ${({ wrapperStyle }) => (wrapperStyle ? wrapperStyle : '')}
 `;
 
-const BaseFormInput = styled.div`
+const BaseFormInput = styled.div<IFormStyle>`
   input,
   select {
     margin: 6px;
@@ -119,6 +129,12 @@ const BaseFormInput = styled.div`
         5px 5px 3px 5px rgba(0, 0, 0, 0);
       box-shadow: 0px 0px 6px 4px #4b0082, 5px 5px 3px 5px rgba(0, 0, 0, 0);
     }
+  }
+  input {
+    ${({ inputStyle }) => (inputStyle ? inputStyle : '')}
+  }
+  select {
+    ${({ selectStyle }) => (selectStyle ? selectStyle : '')}
   }
 `;
 

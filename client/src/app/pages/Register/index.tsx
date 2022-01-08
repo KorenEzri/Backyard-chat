@@ -31,7 +31,7 @@ export function Register() {
         <BaseTitle title="Register" baseSettings={{ center: true }} />
       </BackyardLoginTitle>
       <LoginFormWrapper>
-        <BaseForm inputs={formInputs.register(form, setForm)} submit={onSubmit} />
+        <BaseForm inputs={formInputs.register({form, setForm})} submit={onSubmit} />
       </LoginFormWrapper>
       <LoginPageResgisterBtn>
         <BaseButton

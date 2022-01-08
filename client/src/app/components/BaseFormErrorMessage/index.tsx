@@ -23,7 +23,7 @@ export function BaseFormErrorMessage(props: Props) {
 
   return (
     <div>
-      {error ? (
+      {error?.message.length ? (
         <div
           onClick={() => {
             deleteError();

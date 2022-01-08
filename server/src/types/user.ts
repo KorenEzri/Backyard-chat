@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { IChannel } from ".";
 
 export type Lang = "en" | "he";
 export type UserRole = "admin" | "user";
@@ -25,6 +26,7 @@ export interface IUser {
   blocked: IUser[] | string[];
   friends: IUser[] | string[];
   isVerified: boolean;
+  channels: IChannel[];
   password?: string;
 }
 

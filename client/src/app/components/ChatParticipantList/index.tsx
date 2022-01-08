@@ -7,17 +7,7 @@ export function ChatParticipantList(props: Props) {
   return (
     <ParticipantListWrapper>
       <ParticipantList>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
-        <p>Participant List</p>
+
       </ParticipantList>
     </ParticipantListWrapper>
   );
@@ -26,11 +16,14 @@ export function ChatParticipantList(props: Props) {
 const ParticipantListWrapper = styled.div`
   float: left;
   width: 23.33%;
-  border: 1px solid green;
+  max-height: calc(100vh - 76px);
+  @media (max-height: 482px) {
+    min-height: 320px;
+    max-height: 408px;
+  }
+  overflow-y: scroll;
 `;
 const ParticipantList = styled.ul`
   list-style-type: none;
   text-align: center;
-  height: calc(100vh - 180px);
-  overflow-y: scroll;
 `;

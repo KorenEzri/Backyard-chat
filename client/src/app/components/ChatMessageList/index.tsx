@@ -1,61 +1,21 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
+import { IMessage } from 'types';
+import { ChatInputBox } from '../../components/ChatInputBox/Loadable';
 
-interface Props {}
+export function ChatMessageList() {
+  const [messages, setMessages] = React.useState<IMessage[]>([])
 
-export function ChatMessageList(props: Props) {
+  React.useEffect(() => {
+    
+  })
+
   return (
     <MessageListWrapper>
       <MessageList>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
-        <li>Message list</li>
+     
       </MessageList>
+      <ChatInputBox />
     </MessageListWrapper>
   );
 }
@@ -64,12 +24,12 @@ const MessageListWrapper = styled.div`
   float: left;
   width: 53.33%;
   border: 1px solid black;
-  
 `;
 
 const MessageList = styled.ul`
   list-style-type: none;
   text-align: center;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 164px);
+  min-height: 320px;
   overflow-y: scroll;
 `;

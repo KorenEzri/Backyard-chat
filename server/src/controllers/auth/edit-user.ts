@@ -35,6 +35,7 @@ export const editUser = async (req: ChatRequest, res: ChatResponse) => {
       path: "friends",
       select: friendsFields,
     })
+    .populate({ path: "channels", select: "-channelName" })
     .lean();
 
   if (!user) {

@@ -16,10 +16,12 @@ export const login = async (req: ChatRequest, res: ChatResponse) => {
     createError("content missing", 400);
   }
 
-  const user = await User.findOne({ username }).populate({
-    path: "friends",
-    select: friendsFields,
-  });
+  const user = await User.findOne({ username })
+    .populate({
+      path: "friends",
+      select: friendsFields,
+    })
+    .populate({ path: "channels", select: "-channelName" });
 
   if (!user) {
     return createError("error occurred", 500);
@@ -67,6 +69,7 @@ export const loginWithToken = async (req: ChatRequest, res: ChatResponse) => {
       path: "friends",
       select: friendsFields,
     })
+    .populate({ path: "channels", select: "-channelName" })
     .lean();
 
   if (!user) {

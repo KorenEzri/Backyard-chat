@@ -25,6 +25,11 @@ const userDbSchema: Schema = new mongoose.Schema(
       ref: "User",
       type: [mongoose.Schema.Types.ObjectId],
     },
+    channels: {
+      default: [],
+      ref: "Channel",
+      type: [mongoose.Schema.Types.ObjectId],
+    },
     lastConnected: { type: Date, default: new Date() },
     socketId: { type: String },
     avatar: { type: String },

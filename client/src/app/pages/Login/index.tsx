@@ -27,7 +27,7 @@ export function Login() {
         <BaseTitle title="Login" baseSettings={{ center: true }} />
       </BackyardLoginTitle>
       <LoginFormWrapper>
-        <BaseForm inputs={formInputs.login(form, setForm)} submit={onSubmit} />
+        <BaseForm inputs={formInputs.login({form, setForm})} submit={onSubmit} />
       </LoginFormWrapper>
       <LoginPageResgisterBtn>
         <BaseButton

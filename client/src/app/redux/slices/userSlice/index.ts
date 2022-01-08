@@ -1,4 +1,4 @@
-import { current, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'boilerplate-utils/@reduxjs/toolkit';
 import { IUser } from 'types';
 import { UserState } from './types';
@@ -13,7 +13,6 @@ const slice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    loginWithTokenAction(state) {},
     loginSuccess(state, action: PayloadAction<IUser>) {
       const { payload } = action;
 

@@ -45,8 +45,6 @@ class SocketController implements ISocketController {
     this.socket = SocketIOClient.io(apiHost, {
       auth: {
         token: token ? token : accessToken,
-        // firebaseToken:
-        //   Platform.OS === 'android' ? await PushManager.getPushToken() : null,
       },
     });
 

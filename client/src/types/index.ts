@@ -11,3 +11,6 @@ export * from './friends';
 export * from './banner';
 export * from './base-react-error';
 export * from './form-props';
+export * from './form-style';
+export * from './message';
+export * from './channel';

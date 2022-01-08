@@ -1,11 +1,13 @@
 import { validations } from 'app/forms';
 import { FormProps } from 'types';
 
+interface FormParams {
+  form: React.ComponentState;
+  setForm: React.SetStateAction<any>;
+}
+
 export const formInputs = {
-  login: (
-    form: React.ComponentState,
-    setForm: React.SetStateAction<any>,
-  ): FormProps[] => [
+  login: ({ form, setForm }: FormParams): FormProps[] => [
     {
       title: 'Username',
       required: true,
@@ -27,10 +29,7 @@ export const formInputs = {
         validations.length('Password must be at least 6 characters long', 6, v),
     },
   ],
-  register: (
-    form: React.ComponentState,
-    setForm: React.SetStateAction<any>,
-  ): FormProps[] => [
+  register: ({ form, setForm }: FormParams): FormProps[] => [
     {
       title: 'First name',
       required: true,
@@ -83,6 +82,16 @@ export const formInputs = {
       onChange: e => {
         setForm({ ...form, avatar: e.target.value });
       },
+    },
+  ],
+  sendMessage: ({ form, setForm }: FormParams): FormProps[] => [
+    {
+      title: '',
+      attributes: { value: form.chatMessage },
+      onChange: e => {
+        setForm({ ...form, chatMessage: e.target.value });
+      },
+      validation: v => validations.required('', v),
     },
   ],
 };

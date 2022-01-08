@@ -1,15 +1,13 @@
-import Logger from "../logger/logger";
-import { Server, Socket } from "socket.io";
-import { IUser, Maybe } from "../types";
+import { Server } from "socket.io";
+import { InitialSocket } from "../types";
 import { verifyAccessToken } from "../auth/access-token";
-import User from "../mongo/schemas/user";
-
-interface SocketProperties {
-  userId: string;
-  firebaseToken: Maybe<string>;
-}
-
-interface InitialSocket extends Partial<SocketProperties>, Socket {}
+import {
+  disconnect,
+  joinedChannel,
+  leftChannel,
+  onMessage,
+  updateUser,
+} from "./socket-controllers";
 
 const socketHandler = (io: Server) => {
   io.use(async (socket: InitialSocket, next) => {
@@ -31,51 +29,26 @@ const socketHandler = (io: Server) => {
   });
 
   io.on("connection", async (socket: InitialSocket) => {
-    try {
-      const payload: Partial<IUser> = {
-        isActive: true,
-        socketId: socket.id,
-      };
+    io.emit("socketConnected", { user: socket.userId });
 
-      await User.findOneAndUpdate({ _id: socket.userId }, payload);
-
-      io.emit("socketConnected", { user: socket.userId });
-    } catch ({ message }) {
-      Logger.error(message);
-    }
+    socket.on("updateUser", async ({ payload }, onFinished) => {
+      await updateUser(socket, payload, onFinished);
+    });
 
     socket.on("disconnect", async () => {
-      try {
-        const lastConnected = new Date();
-
-        await User.findOneAndUpdate(
-          { _id: socket.userId },
-          { isActive: false, lastConnected }
-        );
-
-        io.emit("socketDisconnected", {
-          user: socket.userId,
-          lastConnected,
-        });
-      } catch ({ message }) {
-        Logger.error(message);
-      }
+      await disconnect(socket, io);
     });
 
-    socket.on("leftChat", async ({ chatId }) => {
-      if (!chatId) {
-        return;
-      } //TODO error response
-
-      socket.leave(chatId);
+    socket.on("leftChannel", async ({ channelId }) => {
+      await leftChannel(socket, channelId);
     });
 
-    socket.on("joinedChat", async ({ chatId, participants }) => {
-      if (!chatId) {
-        return;
-      } //TODO error response
+    socket.on("joinedChannel", async ({ channelId }) => {
+      await joinedChannel(socket, channelId);
+    });
 
-      socket.join(chatId);
+    socket.on("message", async ({ message }, onFinished) => {
+      await onMessage(socket, message, onFinished);
     });
   });
 };

@@ -1,3 +1,4 @@
+import { IChannel } from './channel';
 import { ValueOf } from './common';
 import { FriendRequestsStatusEnum } from './friends';
 
@@ -19,6 +20,7 @@ export interface IUser {
   blocked: IUser[] | string[];
   friends: IFriend[];
   isVerified: boolean;
+  channels: IChannel[];
   friendRequests: IFriendRequest[];
 }
 
