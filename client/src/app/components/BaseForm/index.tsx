@@ -6,8 +6,6 @@ import { BaseBtnProps } from '../BaseButton';
 import { BaseButton } from '../BaseButton/Loadable';
 import { BaseFormErrorMessage } from '../BaseFormErrorMessage/Loadable';
 
-
-
 interface Props {
   inputs: FormProps[];
   submit: BaseBtnProps;
@@ -46,7 +44,7 @@ export function BaseForm(props: Props) {
       {inputs.map(
         ({ title, attributes, onChange, required, validation, options }) => {
           return (
-            <>
+            <div>
               {title.length ? (
                 <BaseFormLabel>
                   {title}
@@ -58,7 +56,7 @@ export function BaseForm(props: Props) {
                   <select name={title.toLowerCase()}>
                     {options.map(option => {
                       return (
-                        <option value={option.toLowerCase()}>{option}</option>
+                        <option value={option.toLowerCase()} key={`${option}keyoption`}>{option}</option>
                       );
                     })}
                   </select>
@@ -66,6 +64,11 @@ export function BaseForm(props: Props) {
               ) : (
                 <BaseFormInput inputStyle={formStyle?.inputStyle}>
                   <input
+                    onKeyPress={e => {
+                      if (e.key === 'Enter') {
+                        submit.onClick(e);
+                      }
+                    }}
                     type={attributes?.type || 'text'}
                     value={attributes.value}
                     onChange={onChange}
@@ -80,7 +83,7 @@ export function BaseForm(props: Props) {
                   />
                 </BaseFormInput>
               )}
-            </>
+            </div>
           );
         },
       )}

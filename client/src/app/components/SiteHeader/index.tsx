@@ -17,22 +17,18 @@ export function SiteHeader(props: Props) {
 }
 
 const HeaderWrapper = styled.div`
-  border: 2px solid blue;
   height: 60px;
   display: flex;
   justify-content: space-between;
 `;
 
 const HeaderRightmostFrame = styled.div`
-border: 1px solid red;
 `;
 
 const HeaderCenterFrame = styled.div`
-border: 1px solid green;
 
 `;
 
 const HeaderLeftmostFrame = styled.div`
-border: 5px solid yellow;
 
 `;

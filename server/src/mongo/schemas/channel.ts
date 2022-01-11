@@ -3,8 +3,21 @@ import mongoose, { Schema } from "mongoose";
 
 const channelDbSchema: Schema = new mongoose.Schema(
   {
-    channelName: { type: String },
-    createdBy: { ref: "User", type: mongoose.Schema.Types.ObjectId },
+    channelName: { type: String, required: true, unique: true },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    members: {
+      default: [],
+      ref: "User",
+      type: [mongoose.Schema.Types.ObjectId],
+    },
+    activeMembers: {
+      default: [],
+      userId: { type: [mongoose.Schema.Types.ObjectId] },
+      isActive: Boolean,
+    },
     messages: {
       default: [],
       ref: "Message",

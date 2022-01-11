@@ -2,8 +2,10 @@ import { Server } from "socket.io";
 import { InitialSocket } from "../types";
 import { verifyAccessToken } from "../auth/access-token";
 import {
+  createOrJoinChannel,
   disconnect,
   joinedChannel,
+  leftAllChannels,
   leftChannel,
   onMessage,
   updateUser,
@@ -29,7 +31,7 @@ const socketHandler = (io: Server) => {
   });
 
   io.on("connection", async (socket: InitialSocket) => {
-    io.emit("socketConnected", { user: socket.userId });
+    socket.emit("socketConnected", { user: socket.userId });
 
     socket.on("updateUser", async ({ payload }, onFinished) => {
       await updateUser(socket, payload, onFinished);
@@ -39,16 +41,28 @@ const socketHandler = (io: Server) => {
       await disconnect(socket, io);
     });
 
+    socket.on("createOrJoinChannel", async ({ payload }, onFinished) => {
+      await createOrJoinChannel(socket, payload, onFinished);
+    });
+
     socket.on("leftChannel", async ({ channelId }) => {
       await leftChannel(socket, channelId);
     });
 
-    socket.on("joinedChannel", async ({ channelId }) => {
-      await joinedChannel(socket, channelId);
+    socket.on("leftAllChannels", async ({ payload }, onFinished) => {
+      await leftAllChannels(socket, payload);
     });
 
-    socket.on("message", async ({ message }, onFinished) => {
-      await onMessage(socket, message, onFinished);
+    socket.on("joinedChannel", async ({ payload }) => {
+      await joinedChannel(socket, payload);
+    });
+
+    socket.on("message", async ({ payload }, onFinished) => {
+      await onMessage(io, payload, onFinished);
+    });
+
+    socket.on("disconnect", async () => {
+      await disconnect(socket, io);
     });
   });
 };

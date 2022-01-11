@@ -6,6 +6,7 @@ export const updateUserIsActive = (isActive: boolean) => {
     isActive,
     socketId: socketController.socket.id,
   };
+
   socketController.socket.emit('updateUser', {
     payload,
   });

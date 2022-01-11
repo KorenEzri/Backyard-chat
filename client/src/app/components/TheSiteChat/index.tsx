@@ -26,7 +26,7 @@ const ChatSizeLimiterWrapper = styled.div`
 `;
 
 const ChatWrapper = styled.div`
-  border: 3px solid black;
+
   &: :after {
   content: "";
   display: table;

@@ -20,5 +20,4 @@ export function HomePage() {
 }
 
 const HomepageWrapper = styled.div`
-overflow-y: hidden;
 `;

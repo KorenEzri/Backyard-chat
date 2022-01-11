@@ -49,7 +49,7 @@ class SocketController implements ISocketController {
     });
 
     this.isReady = true;
-    this.initListeners();
+    await this.initListeners();
   }
 
   disconnect() {

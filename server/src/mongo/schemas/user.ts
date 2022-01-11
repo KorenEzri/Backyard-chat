@@ -30,6 +30,11 @@ const userDbSchema: Schema = new mongoose.Schema(
       ref: "Channel",
       type: [mongoose.Schema.Types.ObjectId],
     },
+    unreadChannels: {
+      default: [],
+      ref: "Channel",
+      type: [mongoose.Schema.Types.ObjectId],
+    },
     lastConnected: { type: Date, default: new Date() },
     socketId: { type: String },
     avatar: { type: String },

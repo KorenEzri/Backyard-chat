@@ -77,7 +77,6 @@ export const formInputs = {
     },
     {
       title: 'Avatar',
-      required: true,
       attributes: { value: form.avatar },
       onChange: e => {
         setForm({ ...form, avatar: e.target.value });

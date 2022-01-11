@@ -3,7 +3,12 @@ import { ValueOf } from './common';
 import { FriendRequestsStatusEnum } from './friends';
 
 export type UserRole = 'admin' | 'user';
-
+export interface IUnreadChannel {
+  channelName: string;
+  channelId: string;
+  messages: number;
+  earliestMessageId: string;
+}
 export interface IUser {
   firstName: string;
   lastName: string;
@@ -17,11 +22,13 @@ export interface IUser {
   email: string;
   username: string;
   role: UserRole;
+  unreadChannels: string[];
   blocked: IUser[] | string[];
   friends: IFriend[];
   isVerified: boolean;
   channels: IChannel[];
   friendRequests: IFriendRequest[];
+  activeChannelNames?: string[];
 }
 
 export interface IFriendRequest {

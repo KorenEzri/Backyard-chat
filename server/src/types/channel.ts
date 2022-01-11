@@ -3,6 +3,8 @@ import { IMessage } from ".";
 
 export interface IChannel {
   channelName: string;
+  members: string[];
+  activeMembers: { userId: string; isActive: boolean }[];
   messages: IMessage[];
   createdBy: string;
   updatedAt: Date;

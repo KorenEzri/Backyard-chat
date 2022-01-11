@@ -21,7 +21,7 @@ export const login = async (req: ChatRequest, res: ChatResponse) => {
       path: "friends",
       select: friendsFields,
     })
-    .populate({ path: "channels", select: "-channelName" });
+    .populate({ path: "channels", select: "channelName" });
 
   if (!user) {
     return createError("error occurred", 500);
@@ -69,7 +69,7 @@ export const loginWithToken = async (req: ChatRequest, res: ChatResponse) => {
       path: "friends",
       select: friendsFields,
     })
-    .populate({ path: "channels", select: "-channelName" })
+    .populate({ path: "channels", select: "channelName" })
     .lean();
 
   if (!user) {

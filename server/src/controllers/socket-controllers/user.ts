@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import Logger from "../../logger/logger";
+import Channel from "../../mongo/schemas/channel";
 import User from "../../mongo/schemas/user";
 import { InitialSocket, IUser } from "../../types";
 

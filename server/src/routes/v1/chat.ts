@@ -1,6 +1,6 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { logErrorToService, withTryCatch } from "../../controllers";
+import { getAllMessages, withTryCatch } from "../../controllers";
 
 require("dotenv").config();
 
@@ -11,6 +11,8 @@ const apiLimiter = rateLimit({
 
 const chatRouter = Router();
 
-// chatRouter.get("/channels", (req, res) => withTryCatch(req, res));
+chatRouter.post("/all-messages", apiLimiter, (req, res) =>
+  withTryCatch(req, res, getAllMessages)
+);
 
 export default chatRouter;

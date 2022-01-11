@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 
 export interface BaseBtnProps {
   text: string;
-  onClick: React.ReactEventHandler<HTMLButtonElement>;
+  onClick: React.ReactEventHandler<any>;
   shade?: number;
   btnStyle?: string;
   colorOverride?: string;
@@ -22,6 +22,11 @@ export function BaseButton(props: BaseBtnProps) {
       <BaseButtonStyle
         shade={shade}
         onClick={onClick}
+        onKeyPress={e => {
+          if (e.key === 'Enter') {
+            onClick(e);
+          }
+        }}
         title={text}
         btnStyle={btnStyle}
       >

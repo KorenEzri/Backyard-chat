@@ -9,6 +9,13 @@ export interface IName {
   lastName: string;
 }
 
+export interface IUnreadChannel {
+  channelName: string;
+  channelId: string;
+  messages: number;
+  earliestMessageId: string;
+}
+
 export interface IUser {
   firstName: string;
   lastName: string;
@@ -21,8 +28,8 @@ export interface IUser {
   socketId: string;
   email: string;
   username: string;
-  firebaseToken?: string;
   role: UserRole;
+  unreadChannels: string[];
   blocked: IUser[] | string[];
   friends: IUser[] | string[];
   isVerified: boolean;
