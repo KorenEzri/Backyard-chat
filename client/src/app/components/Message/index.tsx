@@ -1,12 +1,11 @@
-import { useLocalStorage } from 'hooks/use-local-storage';
 import * as React from 'react';
+import { useLocalStorage } from 'hooks/use-local-storage';
 import styled from 'styled-components/macro';
 import { IFromObj, IMessage, IUser } from 'types';
 
 export function Message({ message }: { message: IMessage }) {
-  console.log(message);
-
   const [currUser]: IUser[] = useLocalStorage('currUser', '');
+
   return (
     <BaseMessage key={`${message._id}basemsg1`}>
       {currUser._id === (message.from as any)._id ? (

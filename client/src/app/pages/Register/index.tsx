@@ -22,6 +22,7 @@ export function Register() {
     text: 'Register',
     onClick: async () => {
       await register(form)
+      history.push('/login')
     },
   };
 

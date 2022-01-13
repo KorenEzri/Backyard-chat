@@ -15,8 +15,6 @@ export const formInputs = {
       onChange: e => {
         setForm({ ...form, username: e.target.value });
       },
-      validation: v =>
-        validations.length('Username must be at least 6 characters long', 6, v),
     },
     {
       title: 'Password',
@@ -25,8 +23,6 @@ export const formInputs = {
       onChange: e => {
         setForm({ ...form, password: e.target.value });
       },
-      validation: v =>
-        validations.length('Password must be at least 6 characters long', 6, v),
     },
   ],
   register: ({ form, setForm }: FormParams): FormProps[] => [

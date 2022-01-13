@@ -3,8 +3,6 @@ import styled from 'styled-components/macro';
 import { IMessage } from 'types';
 import { ChatInputBox } from '../../components/ChatInputBox/Loadable';
 import { getAllMessages, socketController } from 'network';
-import { useLocalStorage } from 'hooks/use-local-storage';
-import { getItem } from 'network/local-storage';
 import { logger } from 'logger';
 import { Message } from '../Message/Loadable';
 
@@ -38,12 +36,14 @@ export function ChatMessageList() {
       try {
         const messages = await getAllMessages();
 
-        setMessages(messages);
+        if (messages && messages.length) {
+          setMessages([...messages]);
+        }
       } catch ({ message }) {
         logger.error(message);
       }
     })();
-  }, []);
+  });
 
   React.useEffect(() => {
     socketController.subscribe('messageSent', (newMessage: IMessage) => {
@@ -53,7 +53,7 @@ export function ChatMessageList() {
     scrollToBottom();
   }, [messages]);
 
-  return (
+  return  (
     <MessageListWrapper backgrounds={backgroundImages}>
       <MessageList>
         {messages?.map((message: IMessage) => {

@@ -1,34 +1,51 @@
 import { Server } from "socket.io";
 import Logger from "../../logger/logger";
-import Channel from "../../mongo/schemas/channel";
 import Message from "../../mongo/schemas/message";
+import { IMessage } from "../../types";
+import Channel from "../../mongo/schemas/channel";
 import User from "../../mongo/schemas/user";
-import { IChannel, IMessage } from "../../types";
+import { createError } from "../../errors";
 
-const updateActiveChannelMembers = async (
-  activeMembers: { isActive: boolean; userId: string }[],
-  channelId: string
+const updateChannelOnMessage = async (
+  channelId: string,
+  savedMessage: Partial<IMessage>
 ) => {
-  await Channel.findOneAndUpdate(
+  const channel = await Channel.findOneAndUpdate(
     { _id: channelId },
-    { activeMembers: activeMembers.filter((m) => m.isActive === true) }
-  );
-};
+    { $push: { messages: savedMessage._id }, new: true }
+  )
+    .populate({
+      path: "messages",
+      select: "from",
+      populate: {
+        path: "from",
+        select: "username",
+      },
+    })
+    .lean();
 
-const updateUnreadMessagesForMembers = async ({ _id, members }: IChannel) => {
-  await User.updateMany(
-    { _id: { $in: members } },
-    {
-      unreadChannels: _id,
-    },
-    { multi: true }
-  );
-};
+  if (!channel) {
+    Logger.error(`Could not perform "findOneAndUpdate" at ${__filename}:23`);
+    return;
+  }
 
-const updateChannelMembers = async (channel: IChannel) => {
-  const { activeMembers, _id } = channel;
-  await updateActiveChannelMembers(activeMembers, _id);
-  await updateUnreadMessagesForMembers(channel);
+  const { activeMembers, _id, members } = channel;
+
+  try {
+    await Channel.findOneAndUpdate(
+      { _id: channelId },
+      {
+        activeMembers: activeMembers.filter((m) => m.isActive === true),
+      }
+    );
+
+    await User.updateMany(
+      { _id: { $in: members } },
+      { unreadChannels: _id, multi: true }
+    );
+  } catch ({ message }) {
+    console.log(`${message} at ${__filename}:46`);
+  }
 };
 
 export const onMessage = async (
@@ -38,9 +55,12 @@ export const onMessage = async (
 ) => {
   try {
     const { channelId } = message;
-    if (!channelId) return;
 
-    const newMessage = new Message({ ...message });
+    if (!channelId) {
+      return createError(`Invalid user input at ${__filename}:60`, 401);
+    }
+
+    const newMessage = new Message(message);
 
     const savedMessage = await (
       await newMessage.save()
@@ -48,24 +68,9 @@ export const onMessage = async (
 
     io.emit("messageSent", savedMessage);
 
-    const channel = await Channel.findOneAndUpdate(
-      { _id: channelId },
-      { $push: { messages: savedMessage._id } },
-      { new: true }
-    )
-      .populate({
-        path: "messages",
-        select: "from",
-        populate: {
-          path: "from",
-          select: "username",
-        },
-      })
-      .lean();
-
-    await updateChannelMembers(channel);
+    await updateChannelOnMessage(channelId, message);
   } catch ({ message }) {
-    Logger.error(message);
+    Logger.error(`${message}, at ${__filename}:73`);
   } finally {
     if (onFinished) {
       onFinished();

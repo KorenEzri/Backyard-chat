@@ -1,44 +1,57 @@
 import Logger from "../../logger/logger";
 import Channel from "../../mongo/schemas/channel";
 import User from "../../mongo/schemas/user";
-import { IChannel, InitialSocket } from "../../types";
+import { CreateChannelPayload, IChannel, InitialSocket } from "../../types";
 
-interface CreateChannelPayload {
-  channelName: string;
-  socketId: string;
-}
-
-const updateActiveMembersForChannel = async (
+const updateUsersOnChannelJoin = async (
   channelId: string,
   socketId: string
 ) => {
-  await Channel.updateOne(
-    { _id: channelId },
-    {
-      $addToSet: {
-        members: socketId,
-        activeMembers: { userId: socketId, isActive: true },
-      },
+  try {
+    await Channel.updateOne(
+      { _id: channelId },
+      {
+        $addToSet: {
+          members: socketId,
+          activeMembers: { userId: socketId, isActive: true },
+        },
+      }
+    );
+  } catch ({ message }) {
+    Logger.error(`${message}, at ${__filename}:20`);
+  }
+
+  try {
+    const newUser = await User.findOneAndUpdate(
+      { _id: socketId },
+      {
+        $addToSet: {
+          channels: channelId,
+        },
+        new: true,
+      }
+    );
+
+    if (!newUser) {
+      Logger.error(
+        `Could not update channels for user at ${__filename}:29, id: ${socketId}`
+      );
+      return;
     }
-  );
+
+    const unreadChannels = newUser?.unreadChannels;
+
+    unreadChannels.splice(
+      newUser.unreadChannels.findIndex((c) => c === channelId)
+    );
+
+    await User.updateOne({ _id: newUser._id }, { unreadChannels });
+  } catch ({ message }) {
+    Logger.error(`${message}, at ${__filename}:26`);
+  }
 };
 
-const updateUnreadChannelsForUser = async (
-  channelId: string,
-  socketId: string
-) => {
-  await User.findOneAndUpdate(
-    { _id: socketId },
-    {
-      $addToSet: { channels: channelId },
-    },
-    {
-      $pull: { unreadChannels: { channelId } },
-    } // imhere
-  );
-};
-
-export const joinedChannel = async (
+export const onChannelJoin = async (
   socket: InitialSocket,
   { channelId, socketId }: { channelId: string; socketId: string }
 ) => {
@@ -51,14 +64,13 @@ export const joinedChannel = async (
     socket.join(channelId);
     socket.emit("setActiveChannel", { channelId });
 
-    await updateActiveMembersForChannel(channelId, socketId);
-    await updateUnreadChannelsForUser(channelId, socketId);
+    await updateUsersOnChannelJoin(channelId, socketId);
   } catch ({ message }) {
     Logger.error(`${message} at ${__filename}:42`);
   }
 };
 
-export const leftChannel = async (
+export const onChannelLeave = async (
   socket: InitialSocket,
   { channelId, socketId }: { channelId: string; socketId: string }
 ) => {
@@ -70,16 +82,18 @@ export const leftChannel = async (
   try {
     await Channel.updateOne(
       { _id: channelId },
-      { $pull: { activeMembers: { userId: socketId } } }
+      {
+        $pull: { activeMembers: { userId: socketId } },
+      }
     );
 
     socket.leave(channelId);
   } catch ({ message }) {
-    Logger.error(`${message} at ${__filename}:63`);
+    Logger.error(`${message} at ${__filename}:95`);
   }
 };
 
-export const leftAllChannels = async (
+export const leaveAllChannels = async (
   socket: InitialSocket,
   { socketId }: { socketId: string }
 ) => {
@@ -90,7 +104,7 @@ export const leftAllChannels = async (
 
     socket.rooms.forEach((room) => socket.leave(room));
   } catch ({ message }) {
-    Logger.error(message);
+    Logger.error(`${message} at ${__filename}:109`);
   }
 };
 
@@ -101,17 +115,21 @@ export const createOrJoinChannel = async (
 ) => {
   try {
     const doesChannelExist = await Channel.findOne({
-      channelName,
+      identity: { channelName },
+      calledFrom: __filename,
     });
 
     if (doesChannelExist) {
-      await joinedChannel(socket, {
+      await onChannelJoin(socket, {
         channelId: doesChannelExist._id,
         socketId,
       });
       return;
     }
-
+  } catch ({ message }) {
+    Logger.error(`${message}, at ${__filename}:132`);
+  }
+  try {
     const channelPayload: Partial<IChannel> = {
       channelName,
       createdBy: socketId,
@@ -126,11 +144,11 @@ export const createOrJoinChannel = async (
     socket.join(newChannel._id);
 
     socket.emit("setActiveChannel", { channelId: newChannel._id });
-  } catch ({ message }) {
-    Logger.error(message);
-  } finally {
+
     if (onFinished) {
       onFinished();
     }
+  } catch ({ message }) {
+    Logger.error(`${message}, at ${__filename}:151`);
   }
 };

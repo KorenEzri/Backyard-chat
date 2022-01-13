@@ -13,3 +13,8 @@ export interface IChannel {
 }
 
 export interface IChannelDoc extends Document, Omit<IChannel, "_id"> {}
+
+export interface CreateChannelPayload {
+  channelName: string;
+  socketId: string;
+}

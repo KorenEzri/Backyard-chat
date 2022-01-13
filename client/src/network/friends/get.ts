@@ -6,7 +6,7 @@ import { IFriend } from 'types';
 export const getFriendsList = async (
   friendsArr: string[],
 ): Promise<IFriend[]> => {
-  if (!friendsArr || !Array.isArray(friendsArr) || !friendsArr.length)
+  if (!friendsArr || !Array.isArray(friendsArr) || !friendsArr?.length)
     return [];
   try {
     const friends = await securedFetch<IFriend[]>(

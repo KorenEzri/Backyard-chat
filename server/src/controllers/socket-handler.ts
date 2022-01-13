@@ -4,9 +4,9 @@ import { verifyAccessToken } from "../auth/access-token";
 import {
   createOrJoinChannel,
   disconnect,
-  joinedChannel,
-  leftAllChannels,
-  leftChannel,
+  onChannelJoin,
+  leaveAllChannels,
+  onChannelLeave,
   onMessage,
   updateUser,
 } from "./socket-controllers";
@@ -46,15 +46,15 @@ const socketHandler = (io: Server) => {
     });
 
     socket.on("leftChannel", async ({ channelId }) => {
-      await leftChannel(socket, channelId);
+      await onChannelLeave(socket, channelId);
     });
 
     socket.on("leftAllChannels", async ({ payload }, onFinished) => {
-      await leftAllChannels(socket, payload);
+      await leaveAllChannels(socket, payload);
     });
 
     socket.on("joinedChannel", async ({ payload }) => {
-      await joinedChannel(socket, payload);
+      await onChannelJoin(socket, payload);
     });
 
     socket.on("message", async ({ payload }, onFinished) => {

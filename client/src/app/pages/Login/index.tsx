@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { useHistory } from 'react-router-dom';
 import { BaseTitle } from 'app/components/BaseTitle/Loadable';
@@ -18,6 +19,7 @@ export function Login() {
     text: 'Login',
     onClick: async () => {
       await loginByPass(form)
+      window.location.replace("/")
     },
   };
 

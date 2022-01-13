@@ -1,8 +1,7 @@
 import { Server } from "socket.io";
-import Logger from "../../logger/logger";
-import Channel from "../../mongo/schemas/channel";
-import User from "../../mongo/schemas/user";
 import { InitialSocket, IUser } from "../../types";
+import Logger from "../../logger/logger";
+import User from "../../mongo/schemas/user";
 
 export const updateUser = async (
   socket: InitialSocket,
@@ -10,13 +9,13 @@ export const updateUser = async (
   onFinished: any
 ) => {
   try {
-    await User.findOneAndUpdate({ _id: socket.userId }, payload);
+    await User.findOneAndUpdate({ _id: socket.userId, payload });
 
     if (onFinished) {
       onFinished();
     }
   } catch ({ message }) {
-    Logger.error(message);
+    Logger.error(`${message}, at ${__filename}:20`);
   }
 };
 
@@ -34,6 +33,6 @@ export const disconnect = async (socket: InitialSocket, io: Server) => {
       lastConnected,
     });
   } catch ({ message }) {
-    Logger.error(message);
+    Logger.error(`${message}, at ${__filename}:38`);
   }
 };

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Logger from "../logger/logger";
 import { ChatRequest, ChatResponse } from "../types";
 

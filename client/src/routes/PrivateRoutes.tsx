@@ -18,11 +18,11 @@ export default function PrivateRoutes() {
     socketController.connect();
 
     socketController.subscribe('socketConnected', user => {
-      const socketId = (user as any).user;
+      const socketId = (user as { user: string}).user;
       socketController.socket.id = socketId;
+      createOrJoinChannel('global');
       updateUserIsActive(true);
       setIsActive(true);
-      createOrJoinChannel('global');
     });
 
     socketController.subscribe('setActiveChannel', channel => {

@@ -5,7 +5,7 @@ const channelDbSchema: Schema = new mongoose.Schema(
   {
     channelName: { type: String, required: true, unique: true },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     members: {
