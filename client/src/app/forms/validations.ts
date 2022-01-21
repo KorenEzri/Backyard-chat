@@ -12,10 +12,10 @@ export const validations = {
     v && v.length > length ? null : { isError: true, message },
 
   uniqueUsername: async v => {
-    if (!v || v.length < 6) {
+    if (!v || v.length < 6 || v.length > 16) {
       return {
         isError: true,
-        message: 'Username must be at least 6 characters long',
+        message: 'Username must be between 6 and 16 characters long.',
       };
     }
 

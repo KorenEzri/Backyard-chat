@@ -10,28 +10,29 @@ const updateChannelOnMessage = async (
   channelId: string,
   savedMessage: Partial<IMessage>
 ) => {
-  const channel = await Channel.findOneAndUpdate(
-    { _id: channelId },
-    { $push: { messages: savedMessage._id }, new: true }
-  )
-    .populate({
-      path: "messages",
-      select: "from",
-      populate: {
-        path: "from",
-        select: "username",
-      },
-    })
-    .lean();
-
-  if (!channel) {
-    Logger.error(`Could not perform "findOneAndUpdate" at ${__filename}:23`);
-    return;
-  }
-
-  const { activeMembers, _id, members } = channel;
-
   try {
+    const channel = await Channel.findOneAndUpdate(
+      { _id: channelId },
+      { $push: { messages: savedMessage._id } },
+      { new: true }
+    )
+      .populate({
+        path: "messages",
+        select: "from",
+        populate: {
+          path: "from",
+          select: "username",
+        },
+      })
+      .lean();
+
+    if (!channel) {
+      Logger.error(`Could not perform "findOneAndUpdate" at ${__filename}:30`);
+      return;
+    }
+
+    const { activeMembers, _id, members } = channel;
+
     await Channel.findOneAndUpdate(
       { _id: channelId },
       {
@@ -40,11 +41,11 @@ const updateChannelOnMessage = async (
     );
 
     await User.updateMany(
-      { _id: { $in: members } },
+      { _id: { $in: members }, isActive: false },
       { unreadChannels: _id, multi: true }
     );
   } catch ({ message }) {
-    console.log(`${message} at ${__filename}:46`);
+    console.log(`${message}, at ${__filename}:48`);
   }
 };
 
@@ -53,6 +54,9 @@ export const onMessage = async (
   message: Partial<IMessage>,
   onFinished: any
 ) => {
+  if (!message?.message?.length) {
+    return;
+  }
   try {
     const { channelId } = message;
 
@@ -68,7 +72,7 @@ export const onMessage = async (
 
     io.emit("messageSent", savedMessage);
 
-    await updateChannelOnMessage(channelId, message);
+    await updateChannelOnMessage(channelId, savedMessage);
   } catch ({ message }) {
     Logger.error(`${message}, at ${__filename}:73`);
   } finally {

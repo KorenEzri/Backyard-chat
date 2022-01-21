@@ -1,9 +1,10 @@
 import { IMessage } from './message';
+import { IUser } from './user';
 
 export interface IChannel {
   channelName: string;
   messages: IMessage[];
-  members: string[];
+  members: string[] | Partial<IUser[]>;
   activeMembers: { userId: string; isActive: string }[];
   createdBy: string;
   updatedAt: Date;

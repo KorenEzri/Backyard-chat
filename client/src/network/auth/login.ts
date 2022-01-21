@@ -33,7 +33,6 @@ export const loginWithToken = async (): Promise<IUser | null> => {
     >(`${BASE}/login-with-token`, 'POST', { refreshToken });
 
     setItem('accessToken', accessToken);
-    setItem('currUser', user);
 
     return user;
   } catch ({ message }) {

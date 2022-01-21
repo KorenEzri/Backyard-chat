@@ -28,6 +28,7 @@ export interface IUser {
   isVerified: boolean;
   channels: IChannel[];
   friendRequests: IFriendRequest[];
+  color: string;
   activeChannelNames?: string[];
 }
 

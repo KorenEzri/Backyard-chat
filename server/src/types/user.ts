@@ -28,6 +28,7 @@ export interface IUser {
   socketId: string;
   email: string;
   username: string;
+  color: string;
   role: UserRole;
   unreadChannels: string[];
   blocked: IUser[] | string[];

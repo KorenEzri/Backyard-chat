@@ -18,8 +18,8 @@ export function Login() {
   const onSubmit = {
     text: 'Login',
     onClick: async () => {
-      await loginByPass(form)
-      window.location.replace("/")
+      await loginByPass(form);
+      window.location.replace('/');
     },
   };
 
@@ -29,12 +29,17 @@ export function Login() {
         <BaseTitle title="Login" baseSettings={{ center: true }} />
       </BackyardLoginTitle>
       <LoginFormWrapper>
-        <BaseForm inputs={formInputs.login({form, setForm})} submit={onSubmit} />
+        <BaseForm
+          inputs={formInputs.login({ form, setForm })}
+          submit={onSubmit}
+        />
       </LoginFormWrapper>
       <LoginPageResgisterBtn>
         <BaseButton
           text={'Register'}
-          onClick={() => history.push('/register')}
+          onClick={() => {
+            history.push('/register');
+          }}
         />
       </LoginPageResgisterBtn>
     </LoginPageWrapper>
@@ -51,6 +56,6 @@ const LoginFormWrapper = styled.div`
   margin-top: 15px;
 `;
 const LoginPageResgisterBtn = styled.div`
-  text-align:center;
+  text-align: center;
   margin-top: 10px;
 `;

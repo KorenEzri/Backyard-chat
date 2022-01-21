@@ -5,11 +5,11 @@ import {
   createOrJoinChannel,
   disconnect,
   onChannelJoin,
-  leaveAllChannels,
   onChannelLeave,
   onMessage,
   updateUser,
 } from "./socket-controllers";
+import Logger from "../logger/logger";
 
 const socketHandler = (io: Server) => {
   io.use(async (socket: InitialSocket, next) => {
@@ -31,7 +31,10 @@ const socketHandler = (io: Server) => {
   });
 
   io.on("connection", async (socket: InitialSocket) => {
-    socket.emit("socketConnected", { user: socket.userId });
+    Logger.http("new client connected");
+    socket.emit("socketConnected", socket.userId);
+
+    updateUser(socket, { isActive: true, lastConnected: new Date() });
 
     socket.on("updateUser", async ({ payload }, onFinished) => {
       await updateUser(socket, payload, onFinished);
@@ -47,10 +50,6 @@ const socketHandler = (io: Server) => {
 
     socket.on("leftChannel", async ({ channelId }) => {
       await onChannelLeave(socket, channelId);
-    });
-
-    socket.on("leftAllChannels", async ({ payload }, onFinished) => {
-      await leaveAllChannels(socket, payload);
     });
 
     socket.on("joinedChannel", async ({ payload }) => {

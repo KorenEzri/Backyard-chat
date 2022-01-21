@@ -7,6 +7,7 @@ const messageDbSchema: Schema = new mongoose.Schema(
     from: { ref: "User", type: mongoose.Schema.Types.ObjectId },
     channelId: { type: mongoose.Schema.Types.ObjectId },
     message: { type: String, required: true },
+    createdAt: { type: Date, expires: "30d", default: Date.now },
   },
   { timestamps: true }
 );

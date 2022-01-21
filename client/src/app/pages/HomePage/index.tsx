@@ -12,7 +12,6 @@ export function HomePage() {
         <title>Home Page</title>
         <meta name="description" content="Backyard chat homepage" />
       </Helmet>
-      <SiteHeader />
       <TheSiteChat />
       {/* <TheSiteTranslator /> */}
     </HomepageWrapper>

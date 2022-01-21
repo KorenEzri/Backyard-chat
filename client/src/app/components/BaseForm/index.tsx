@@ -44,7 +44,7 @@ export function BaseForm(props: Props) {
       {inputs.map(
         ({ title, attributes, onChange, required, validation, options }) => {
           return (
-            <div>
+            <div key={`${title}key4inpt`}>
               {title.length ? (
                 <BaseFormLabel>
                   {title}
@@ -152,7 +152,7 @@ const RequiredMark = styled.span`
 
 const BaseFormLabel = styled.label`
   cursor: pointer;
-  font-family: 'backyardregular';
+  font-family: 'backyardregular' !important;
   letter-spacing: 0.6px;
   &:active {
     font-family: roboto;

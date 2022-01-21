@@ -3,10 +3,6 @@ import { getItem, setItem } from 'network/local-storage';
 import { IUser } from 'types';
 
 export const createOrJoinChannel = (channelName: string) => {
-  const currentUser: IUser = getItem('currUser');
-
-  setItem('currUser', currentUser);
-
   const payload = {
     socketId: socketController.socket.id,
     channelName,
@@ -15,10 +11,6 @@ export const createOrJoinChannel = (channelName: string) => {
   socketController.socket.emit('createOrJoinChannel', {
     payload,
   });
-
-  currentUser.activeChannelNames = currentUser.activeChannelNames
-    ? [...currentUser.activeChannelNames, channelName]
-    : [channelName];
 };
 
 export const leaveChannel = (channelName: string) => {
@@ -30,17 +22,6 @@ export const leaveChannel = (channelName: string) => {
   socketController.socket.emit('leftChannel', { payload });
 
   setItem('currentChannel', '');
-
-  const currentUser: IUser = getItem('currUser');
-
-  currentUser.activeChannelNames = currentUser.activeChannelNames
-    ? currentUser.activeChannelNames.splice(
-        currentUser.activeChannelNames.indexOf(channelName),
-        1,
-      )
-    : [];
-
-  setItem('currUser', currentUser);
 };
 
 export const leaveAllChannels = () => {

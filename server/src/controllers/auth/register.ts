@@ -6,8 +6,11 @@ import Logger from "../../logger/logger";
 import User from "../../mongo/schemas/user";
 import { ChatRequest, ChatResponse, IUser } from "../../types";
 import { userValidationSchema } from "../../validations";
+import { colors } from "./colors";
 
 export const register = async (req: ChatRequest, res: ChatResponse) => {
+  const colorValues = Object.keys(colors);
+
   const {
     firstName,
     lastName,
@@ -22,6 +25,7 @@ export const register = async (req: ChatRequest, res: ChatResponse) => {
     lastName,
     username,
     avatar,
+    color: colorValues[Math.floor(Math.random() * colorValues.length)],
     email,
     password,
   };

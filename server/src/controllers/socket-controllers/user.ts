@@ -2,14 +2,15 @@ import { Server } from "socket.io";
 import { InitialSocket, IUser } from "../../types";
 import Logger from "../../logger/logger";
 import User from "../../mongo/schemas/user";
+import { leaveAllChannels } from ".";
 
 export const updateUser = async (
   socket: InitialSocket,
   payload: Partial<IUser>,
-  onFinished: any
+  onFinished?: any
 ) => {
   try {
-    await User.findOneAndUpdate({ _id: socket.userId, payload });
+    await User.updateOne({ _id: socket.userId }, payload);
 
     if (onFinished) {
       onFinished();
@@ -32,6 +33,10 @@ export const disconnect = async (socket: InitialSocket, io: Server) => {
       user: socket.userId,
       lastConnected,
     });
+
+    if (socket.userId) {
+      await leaveAllChannels(socket, socket.userId);
+    }
   } catch ({ message }) {
     Logger.error(`${message}, at ${__filename}:38`);
   }

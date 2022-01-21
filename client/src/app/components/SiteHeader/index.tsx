@@ -1,16 +1,21 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { TheUserControls } from '../TheUserControls/Loadable';
-
-interface Props {}
+ 
+interface Props {
+  backyard,
+  setBackyard
+}
 
 export function SiteHeader(props: Props) {
+  const { backyard, setBackyard } = props; 
+
   return (
     <HeaderWrapper>
-      <HeaderLeftmostFrame>LEFTasdadsadasdsa</HeaderLeftmostFrame>
-      <HeaderCenterFrame>asddddd</HeaderCenterFrame>
+      <HeaderLeftmostFrame title={'Backyard-Chat'}>Backyard-Chat</HeaderLeftmostFrame>
+      <HeaderCenterFrame></HeaderCenterFrame>
       <HeaderRightmostFrame>
-        <TheUserControls />
+        <TheUserControls backyard={backyard} setBackyard={setBackyard} />
       </HeaderRightmostFrame>
     </HeaderWrapper>
   );
@@ -23,6 +28,7 @@ const HeaderWrapper = styled.div`
 `;
 
 const HeaderRightmostFrame = styled.div`
+
 `;
 
 const HeaderCenterFrame = styled.div`
@@ -30,5 +36,9 @@ const HeaderCenterFrame = styled.div`
 `;
 
 const HeaderLeftmostFrame = styled.div`
+line-height: 50px;
+font-size: 20px;
+margin: 5px;
+letter-spacing: 2px;
 
 `;

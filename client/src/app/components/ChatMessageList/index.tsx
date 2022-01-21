@@ -1,16 +1,25 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
-import { IMessage } from 'types';
+import { IChannel, IMessage, IUser } from 'types';
 import { ChatInputBox } from '../../components/ChatInputBox/Loadable';
 import { getAllMessages, socketController } from 'network';
 import { logger } from 'logger';
 import { Message } from '../Message/Loadable';
+import { useLocalStorage } from 'hooks/use-local-storage';
 
 interface Props {
   backgrounds: string[];
 }
 
-export function ChatMessageList() {
+export function ChatMessageList({
+  activeChannel,
+}: {
+  user: IUser;
+  activeChannel: string;
+}) {
+  const [user, setUser] = useLocalStorage('user', {} as IUser);
+  const [messages, setMessages] = React.useState<IMessage[]>([]);
+
   const backgroundImages = [
     '2c',
     '2h',
@@ -22,8 +31,6 @@ export function ChatMessageList() {
     'red',
   ];
 
-  const [messages, setMessages] = React.useState<IMessage[]>([]);
-
   const messagesEndRef = React.useRef(null);
 
   const scrollToBottom = () => {
@@ -34,30 +41,58 @@ export function ChatMessageList() {
   React.useEffect(() => {
     (async () => {
       try {
-        const messages = await getAllMessages();
-
+        const messages = await getAllMessages(activeChannel);
+        
         if (messages && messages.length) {
-          setMessages([...messages]);
+          const channelIndex = user.channels.findIndex(
+            (c: IChannel) =>
+              c._id === activeChannel || c.channelName === activeChannel,
+          );
+
+          const channelToUpdate: IChannel = user.channels[channelIndex];
+
+          channelToUpdate.messages = messages as IMessage[];
+
+          user.channels[channelIndex] = channelToUpdate;
+
+          setUser(user);
+
+          setMessages(user.channels[channelIndex].messages);
         }
       } catch ({ message }) {
-        logger.error(message);
+        logger.error(`${message} at ${__filename}:58`);
       }
     })();
-  });
+  }, []);
 
   React.useEffect(() => {
     socketController.subscribe('messageSent', (newMessage: IMessage) => {
-      setMessages([...messages, newMessage]);
+      const channelIndex = user.channels.findIndex(
+        (c: IChannel) =>
+          c._id === activeChannel || c.channelName === activeChannel,
+      );
+
+      const channelToUpdate: IChannel = user.channels[channelIndex];
+
+      channelToUpdate.messages
+        ? channelToUpdate.messages.push(newMessage)
+        : (channelToUpdate.messages = [newMessage]);
+
+      user.channels[channelIndex] = channelToUpdate;
+
+      setUser(user);
+
+      setMessages([...user.channels[channelIndex].messages]);
     });
 
     scrollToBottom();
   }, [messages]);
 
-  return  (
+  return (
     <MessageListWrapper backgrounds={backgroundImages}>
       <MessageList>
         {messages?.map((message: IMessage) => {
-          return <Message message={message} />;
+          return <Message message={message} key={`${message._id}msg${message.createdAt}key`} />;
         })}
         <div ref={messagesEndRef}></div>
       </MessageList>
@@ -68,7 +103,7 @@ export function ChatMessageList() {
 
 const MessageListWrapper = styled.div<Props>`
   float: left;
-  width: 53.33%;
+  width: 73.33%;
   /* ===== Scrollbar CSS ===== */
   /* Firefox */
   * {
@@ -111,7 +146,7 @@ const MessageList = styled.ul`
   height: calc(100vh - 164px);
   min-height: 320px;
   margin-top: -0.001px;
-  margin-left: -30px;
+  margin-left: -40px;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;

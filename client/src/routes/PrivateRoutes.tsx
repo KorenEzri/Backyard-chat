@@ -1,40 +1,28 @@
 import * as React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { HomePage } from 'app/pages/HomePage/Loadable';
-import { useLocalStorage } from 'hooks/use-local-storage';
 import { socketController } from 'network';
 import { updateUserIsActive } from 'network/sockets/update-user';
 import { createOrJoinChannel } from 'network/sockets/channel';
-import { setItem } from 'network/local-storage';
+import { useLocalStorage } from 'hooks/use-local-storage';
+import { IUser } from 'types';
 
 export default function PrivateRoutes() {
-  const [, setIsActive] = useLocalStorage('isActive', true);
-
-  window.addEventListener('beforeunload', () => {
-    socketController.disconnect();
-  });
+  const [user, setUser] = useLocalStorage('user', {} as IUser)
 
   React.useEffect(() => {
     socketController.connect();
 
-    socketController.subscribe('socketConnected', user => {
-      const socketId = (user as { user: string}).user;
-      socketController.socket.id = socketId;
+    socketController.subscribe('socketConnected', (userId: string) => {
+      socketController.socket.id =  userId;
       createOrJoinChannel('global');
       updateUserIsActive(true);
-      setIsActive(true);
-    });
-
-    socketController.subscribe('setActiveChannel', channel => {
-      setItem('currentChannel', (channel as any).channelId);
-      socketController.unsubscribe('setActiveChannel');
     });
 
     return () => {
       if (!socketController.socket) {
         return;
       }
-
       socketController.disconnect();
     };
   }, []);

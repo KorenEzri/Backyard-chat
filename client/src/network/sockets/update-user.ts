@@ -1,3 +1,4 @@
+import { setItem } from './../local-storage';
 import { socketController } from 'network';
 import { IUser } from 'types';
 
@@ -10,4 +11,6 @@ export const updateUserIsActive = (isActive: boolean) => {
   socketController.socket.emit('updateUser', {
     payload,
   });
+
+  setItem('isActive', true);
 };

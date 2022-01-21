@@ -34,7 +34,7 @@ const updateUsersOnChannelJoin = async (
 
     if (!newUser) {
       Logger.error(
-        `Could not update channels for user at ${__filename}:29, id: ${socketId}`
+        `Could not update channels for user at ${__filename}:37, id: ${socketId}`
       );
       return;
     }
@@ -59,10 +59,8 @@ export const onChannelJoin = async (
     return;
     //TODO error response
   }
-
   try {
     socket.join(channelId);
-    socket.emit("setActiveChannel", { channelId });
 
     await updateUsersOnChannelJoin(channelId, socketId);
   } catch ({ message }) {
@@ -95,12 +93,15 @@ export const onChannelLeave = async (
 
 export const leaveAllChannels = async (
   socket: InitialSocket,
-  { socketId }: { socketId: string }
+  socketId: string
 ) => {
   try {
-    await Channel.updateMany({
-      $pull: { activeMembers: { userId: socketId } },
-    });
+    await Channel.updateMany(
+      { "activeMembers.userId": socketId },
+      {
+        $pull: { activeMembers: { userId: socketId } },
+      }
+    );
 
     socket.rooms.forEach((room) => socket.leave(room));
   } catch ({ message }) {
@@ -141,9 +142,12 @@ export const createOrJoinChannel = async (
 
     await newChannel.save();
 
-    socket.join(newChannel._id);
+    Logger.help("New channel created");
 
-    socket.emit("setActiveChannel", { channelId: newChannel._id });
+    await onChannelJoin(socket, {
+      channelId: newChannel._id,
+      socketId,
+    });
 
     if (onFinished) {
       onFinished();

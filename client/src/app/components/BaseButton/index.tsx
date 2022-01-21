@@ -45,7 +45,7 @@ const BaseButtonStyle = styled.button<BtnStyle>`
   display: inline-block;
   cursor: pointer;
   color: #fadfdf;
-  font-family: 'backyardregular';
+  font-family: 'backyardregular' !important;
   font-size: 20px;
   letter-spacing: 1.5px;
   padding: 6px 24px;

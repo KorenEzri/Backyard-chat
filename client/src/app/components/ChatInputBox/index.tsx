@@ -4,6 +4,7 @@ import { formInputs } from 'app/forms';
 import { BaseForm } from '../BaseForm/Loadable';
 import { IFormStyle } from 'types';
 import { sendMessage } from 'network/sockets/message';
+import { getItem } from 'network/local-storage';
 
 export function ChatInputBox() {
   const [form, setForm] = React.useState({
@@ -58,8 +59,8 @@ export function ChatInputBox() {
 
   const onClick = {
     text: 'Send',
-    onClick: e => {
-      sendMessage(form.chatMessage);
+    onClick: async e => {
+      await sendMessage(form.chatMessage, getItem('activeChannel') || 'global');
       setForm({ chatMessage: '' });
       e.target.focus();
     },

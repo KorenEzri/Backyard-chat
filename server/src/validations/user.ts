@@ -7,4 +7,5 @@ export const userValidationSchema = Joi.object({
   lastName: Joi.string().required().min(2),
   avatar: Joi.string(),
   password: Joi.string().required().min(6),
+  color: Joi.string(),
 });
