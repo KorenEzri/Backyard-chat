@@ -57,11 +57,12 @@ export const onMessage = async (
   if (!message?.message?.length) {
     return;
   }
+
   try {
     const { channelId } = message;
 
     if (!channelId) {
-      return createError(`Invalid user input at ${__filename}:60`, 401);
+      return createError(`Invalid user input at ${__filename}:64`, 401);
     }
 
     const newMessage = new Message(message);
@@ -73,8 +74,9 @@ export const onMessage = async (
     io.emit("messageSent", savedMessage);
 
     await updateChannelOnMessage(channelId, savedMessage);
+    io.emit("setUserAsActive");
   } catch ({ message }) {
-    Logger.error(`${message}, at ${__filename}:73`);
+    Logger.error(`${message}, at ${__filename}:77`);
   } finally {
     if (onFinished) {
       onFinished();

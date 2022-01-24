@@ -6,7 +6,7 @@ import { ChatRequest, ChatResponse, IChannel } from "../../types";
 
 export const getAllMessages = async (req: ChatRequest, res: ChatResponse) => {
   const { channel } = req.body;
-  console.log("channel: ", channel);
+
   if (!channel) {
     return createError("error occurred", 500);
   }

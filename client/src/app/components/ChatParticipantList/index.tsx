@@ -1,5 +1,6 @@
 import { logger } from 'logger';
-import { getParticipants } from 'network';
+import { getParticipants, socketController } from 'network';
+import { sendMessage } from 'network/sockets/message';
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { IChannel, IUser } from 'types';
@@ -43,41 +44,66 @@ export function ChatParticipantList({
     })();
   }, []);
 
-  // React.useEffect(() => {
-  //   socketController.subscribe('messageSent', (newMessage: IMessage) => {
-  //     const channelIndex = user.channels.findIndex(
-  //       (c: IChannel) =>
-  //         c._id === activeChannel || c.channelName === activeChannel,
-  //     );
+  React.useEffect(() => {
+    socketController.subscribe(
+      'socketDisconnected',
+      ({ user, lastConnected }: { user: string; lastConnected: Date }) => {
+        const participantIndex = participants.findIndex(p => p?._id === user);
+        if (participantIndex === -1) return;
 
-  //     const channelToUpdate: IChannel = user.channels[channelIndex];
+        const participant = participants[participantIndex];
+        if (!participant) return;
 
-  //     channelToUpdate.messages
-  //       ? channelToUpdate.messages.push(newMessage)
-  //       : (channelToUpdate.messages = [newMessage]);
+        participant.isActive = false;
+          participants.splice(participantIndex, 1, participant);
+          setParticipants([
+            ...participants.sort((a, b) =>
+              a?.isActive === b?.isActive ? 0 : a?.isActive ? -1 : 1,
+            ),
+          ]);
+      },
+    );
 
-  //     user.channels[channelIndex] = channelToUpdate;
+    socketController.subscribe('setUserAsActive', async () => {
+      try {
+        const participantsList = await getParticipants(activeChannel);
 
-  //     setUser(user);
+        if (participantsList && participantsList.length) {
+          participantsList.sort((a, b) =>
+            a?.isActive === b?.isActive ? 0 : a?.isActive ? -1 : 1,
+          );
 
-  //     setMessages([...user.channels[channelIndex].messages]);
-  //   });
+          const channelIndex = user.channels.findIndex(
+            (c: IChannel) =>
+              c._id === activeChannel || c.channelName === activeChannel,
+          );
 
-  //   scrollToBottom();
-  // }, [messages]);
+          const channelToUpdate: IChannel = user.channels[channelIndex];
+
+          channelToUpdate.members = participantsList;
+
+          user.channels[channelIndex] = channelToUpdate;
+
+          setParticipants(participantsList);
+        }
+      } catch ({ message }) {
+        logger.error(`${message} at ${__filename}:38`);
+      }
+    });
+  }, []);
 
   return (
     <ParticipantListWrapper>
       {/* <ParticipantListTitle title={'Participants'}>Participants</ParticipantListTitle> */}
       <ParticipantList>
         {participants?.map((participant, index) => {
-          if (!participant) return;
+          if (!participant || participant._id === user._id) return;
           return (
             <ChatParticipant
               key={`${participant._id}index${index}`}
               participant={participant}
             />
-          )
+          );
         })}
       </ParticipantList>
     </ParticipantListWrapper>
@@ -96,7 +122,7 @@ const ParticipantListWrapper = styled.div`
 const ParticipantList = styled.ul`
   list-style-type: none;
   text-align: center;
-  margin-top:-1px;
+  margin-top: -1px;
 `;
 const ParticipantListTitle = styled.h2`
   text-align: center;
@@ -107,9 +133,9 @@ const ParticipantListTitle = styled.h2`
   overflow: hidden;
   @media (max-width: 667px) {
     font-size: 1em;
-  height: 21px;
+    height: 21px;
   }
   @media (max-width: 1167px) {
-  margin-right: -5px;
+    margin-right: -5px;
   }
 `;

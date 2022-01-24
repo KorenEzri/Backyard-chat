@@ -38,6 +38,7 @@ const socketHandler = (io: Server) => {
 
     socket.on("updateUser", async ({ payload }, onFinished) => {
       await updateUser(socket, payload, onFinished);
+      socket.emit("setUserAsActive");
     });
 
     socket.on("disconnect", async () => {
@@ -54,6 +55,7 @@ const socketHandler = (io: Server) => {
 
     socket.on("joinedChannel", async ({ payload }) => {
       await onChannelJoin(socket, payload);
+      socket.emit("setUserAsActive");
     });
 
     socket.on("message", async ({ payload }, onFinished) => {

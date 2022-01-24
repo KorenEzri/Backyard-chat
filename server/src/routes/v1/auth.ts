@@ -1,5 +1,4 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
 import {
   login,
   getToken,
@@ -15,11 +14,6 @@ import { ChatRequest, ChatResponse } from "../../types";
 
 require("dotenv").config();
 
-const apiLimiter = rateLimit({
-  windowMs: 30 * 1000, // 15 minutes
-  max: 10,
-});
-
 const authRouter = Router();
 
 authRouter.post("/login", (req, res) => withTryCatch(req, res, login));
@@ -32,9 +26,7 @@ authRouter.post("/login-with-token", (req, res) =>
   withTryCatch(req, res, loginWithToken)
 );
 
-authRouter.post("/get-token", apiLimiter, (req, res) =>
-  withTryCatch(req, res, getToken)
-);
+authRouter.post("/get-token", (req, res) => withTryCatch(req, res, getToken));
 
 authRouter.post("/register", (req, res) => withTryCatch(req, res, register));
 

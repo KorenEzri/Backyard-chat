@@ -11,7 +11,7 @@ export default function PrivateRoutes() {
   const [user, setUser] = useLocalStorage('user', {} as IUser)
 
   React.useEffect(() => {
-    socketController.connect();
+      socketController.connect();
 
     socketController.subscribe('socketConnected', (userId: string) => {
       socketController.socket.id =  userId;

@@ -3,7 +3,6 @@ import Channel from "../../mongo/schemas/channel";
 import { ChatRequest, ChatResponse } from "./../../types/chat";
 import Logger from "../../logger/logger";
 import { createError } from "../../errors";
-import { IUser } from "../../types";
 
 export const getChannelId = async (req: ChatRequest, res: ChatResponse) => {
   const { channelName } = req.body;

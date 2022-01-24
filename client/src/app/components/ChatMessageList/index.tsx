@@ -42,7 +42,7 @@ export function ChatMessageList({
     (async () => {
       try {
         const messages = await getAllMessages(activeChannel);
-        
+
         if (messages && messages.length) {
           const channelIndex = user.channels.findIndex(
             (c: IChannel) =>
@@ -50,6 +50,8 @@ export function ChatMessageList({
           );
 
           const channelToUpdate: IChannel = user.channels[channelIndex];
+
+          if (!channelToUpdate) return;
 
           channelToUpdate.messages = messages as IMessage[];
 
@@ -60,7 +62,7 @@ export function ChatMessageList({
           setMessages(user.channels[channelIndex].messages);
         }
       } catch ({ message }) {
-        logger.error(`${message} at ${__filename}:58`);
+        logger.error(`${message} at ${__filename}:63`);
       }
     })();
   }, []);
@@ -73,6 +75,8 @@ export function ChatMessageList({
       );
 
       const channelToUpdate: IChannel = user.channels[channelIndex];
+
+      if (!channelToUpdate) return;
 
       channelToUpdate.messages
         ? channelToUpdate.messages.push(newMessage)
@@ -92,7 +96,12 @@ export function ChatMessageList({
     <MessageListWrapper backgrounds={backgroundImages}>
       <MessageList>
         {messages?.map((message: IMessage) => {
-          return <Message message={message} key={`${message._id}msg${message.createdAt}key`} />;
+          return (
+            <Message
+              message={message}
+              key={`${message._id}msg${message.createdAt}key`}
+            />
+          );
         })}
         <div ref={messagesEndRef}></div>
       </MessageList>
